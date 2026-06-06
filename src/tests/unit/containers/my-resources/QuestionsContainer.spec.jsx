@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 
 import QuestionsContainer from '~/containers/my-resources/questions-container/QuestionsContainer'
 
@@ -74,6 +74,42 @@ describe('QuestionsContainer test', () => {
 
     expect(columnLabel).toBeInTheDocument()
     expect(questionTitle).toBeInTheDocument()
+  })
+})
+
+describe('QuestionsContainer search test', () => {
+  beforeEach(async () => {
+    await waitFor(() => {
+      mockAxiosClient
+        .onGet(URLs.resources.questions.get)
+        .reply(200, questionResponseMock)
+
+      renderWithProviders(<QuestionsContainer />)
+    })
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+    mockAxiosClient.reset()
+  })
+
+  it('should send title param when searching by question name', async () => {
+    vi.useFakeTimers()
+
+    const searchInput = screen.getByPlaceholderText('common.search')
+
+    fireEvent.change(searchInput, { target: { value: 'First' } })
+
+    await act(async () => {
+      vi.runAllTimers()
+    })
+    vi.useRealTimers()
+
+    await waitFor(() => {
+      const requests = mockAxiosClient.history.get
+      const lastRequest = requests[requests.length - 1]
+      expect(lastRequest.params.title).toBe('First')
+    })
   })
 })
 
