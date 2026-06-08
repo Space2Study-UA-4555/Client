@@ -24,11 +24,11 @@ const side = {
     textAlign: { xs: 'start', sm: 'end' }
   },
   title: {
-    typography: { xs: 'h6' },
+    typography: { xs: 'h5' },
     marginBottom: '8px'
   },
   description: {
-    typography: { xs: 'subtitle2' }
+    typography: { xs: 'body2' }
   }
 }
 
