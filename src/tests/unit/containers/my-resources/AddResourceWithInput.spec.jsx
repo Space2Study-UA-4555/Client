@@ -39,7 +39,7 @@ describe('AddResourceWithInput test', () => {
 
     const searchInput = screen.getByPlaceholderText('common.search')
 
-    await waitFor(() => user.type(searchInput, text))
+    await user.type(searchInput, text)
 
     expect(searchInput.value).toBe(text)
 
