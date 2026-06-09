@@ -89,6 +89,7 @@ describe('QuestionsContainer search test', () => {
   })
 
   afterEach(() => {
+    vi.useRealTimers()
     vi.clearAllMocks()
     mockAxiosClient.reset()
   })
