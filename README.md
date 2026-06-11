@@ -40,7 +40,7 @@ SpaceToStudy project is a platform where experts in various fields share their k
 
 ### Required to install
 
-- NodeJS (18.14.0 LTS)
+- NodeJS (22 LTS)
 
 ### Clone
 
@@ -61,6 +61,54 @@ $ npm install
 3. Open http://localhost:3000 to view it in the browser.
 
 ###### <a name="footnote">*</a> - to run the project you need an `.env` file in root folder
+
+### Local Docker setup
+
+Requirements: Docker, Docker Compose and Make.
+
+First-time setup (creates `.env` from `.env.example`):
+
+```shell
+$ make setup
+```
+
+Review the generated `.env`, then build and start the client:
+
+```shell
+$ make build
+$ make up
+```
+
+The client is available at:
+
+```text
+http://localhost:8090
+```
+
+Any change to a `VITE_*` value is embedded at build time, so rebuild the image
+after changing it:
+
+```shell
+$ make rebuild
+```
+
+Useful commands:
+
+```shell
+$ make logs   # tail container logs
+$ make ps     # container status
+$ make down   # stop and remove the container
+```
+
+The `make build`, `make up` and `make rebuild` targets fail early with a clear
+message if `.env` is missing — run `make setup` first.
+
+This Docker setup builds the app and serves the static files through nginx. It is
+**not** a Vite hot-reload development server — for live reload use `npm run start`.
+
+The compose file ships Traefik labels but no Traefik service: a shared/external
+Traefik instance is expected. Without Traefik, the client is reachable directly
+at `http://localhost:8090`.
 
 
 ## Usage
