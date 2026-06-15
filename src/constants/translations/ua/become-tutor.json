@@ -6,7 +6,7 @@
     "photo": "Фото"
   },
   "generalInfo": {
-    "title": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+    "title": "Будь ласка, заповніть реєстраційну форму для найкращого досвіду користування.",
     "textFieldLabel": "Коротко опишіть свій професійний статус",
     "helperText": "Поля зі знаком * є обов'язковими"
   },
@@ -30,7 +30,7 @@
 	"imageAlt": "Ваша фотографія",
 	"button": "Завантажте свою фотографію профілю",
 	"placeholder":"Попередній перегляд фотографій",
-	"description":"Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
+	"description":"Завантажте фото, яке представляє вас і допоможе іншим вас впізнати.",
 	"typeError": "Неправильний тип файлу. Дозволяються лише файли .png/.jpg/.jpeg.",
 	"fileSizeError": "Розмір одного файлу не може перевищувати 10 Мб."
   },
