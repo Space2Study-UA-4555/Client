@@ -1,0 +1,27 @@
+services:
+
+  client:
+    build:
+      context: .
+      args:
+        VITE_API_BASE_PATH: ${VITE_API_BASE_PATH}
+        VITE_GMAIL_CLIENT_ID: ${VITE_GMAIL_CLIENT_ID:-}
+        VITE_APP_IMG_URL: ${VITE_APP_IMG_URL:-}
+        VITE_APP_IMG_USER_URL: ${VITE_APP_IMG_USER_URL:-}
+        VITE_APP_TINY_MCE_API_KEY: ${VITE_APP_TINY_MCE_API_KEY:-}
+    container_name: s2s-client
+    restart: no
+    ports:
+      - "8090:8080"
+    # Traefik labels are used only when a shared/external Traefik instance is running.
+    # There is no Traefik service in this compose file. Without Traefik,
+    # the client is reachable directly at http://localhost:8090.
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.s2s-http.rule: "Host(`s2s.docker.localhost`)"
+      traefik.http.routers.s2s-http.entrypoints: http
+      traefik.http.routers.s2s-http.middlewares: https-redirect@file
+      traefik.http.routers.s2s-https.rule: "Host(`s2s.docker.localhost`)"
+      traefik.http.routers.s2s-https.entrypoints: https
+      traefik.http.routers.s2s-https.tls: "true"
+      traefik.http.services.s2s.loadbalancer.server.port: "8080"

@@ -11,9 +11,12 @@
 test-report.xml
 .scannerwork
 
-# production
+# production (Vite build output)
 /build
 /build-story
+/dist
+/dist-ssr
+*.local
 
 # misc
 /.idea

@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 SHELL         := /bin/bash
 COMPOSE       := docker compose
+COMPOSE_PROD  := docker compose -f docker-compose.prod.yml
 
 .PHONY: help
 help: ## Show available commands
@@ -12,7 +13,7 @@ help: ## Show available commands
 .PHONY: setup
 setup: ## First-time setup: copy .env.example → .env
 	@cp -n .env.example .env \
-	  && echo "✓ .env created — fill in the values, then: make build up" \
+	  && echo "✓ .env created — fill in the values, then: make up" \
 	  || echo "ℹ .env already exists"
 
 .PHONY: install
@@ -28,9 +29,9 @@ check-env: ## Fail early if .env is missing
 		exit 1; \
 	fi
 
-# ── Dev ────────────────────────────────────────────────────────
+# ── Local (no Docker) ──────────────────────────────────────────
 .PHONY: dev
-dev: ## Start Vite dev server (port 3000)
+dev: ## Run the Vite dev server directly on the host (port 3000)
 	npm run start
 
 .PHONY: test
@@ -45,22 +46,14 @@ lint: ## Lint code
 build-static: ## Build static files (dist/)
 	npm run build
 
-# ── Docker ─────────────────────────────────────────────────────
-.PHONY: build
-build: check-env ## Build Docker image (reads VITE_* from .env)
-	$(COMPOSE) build
-
+# ── Docker (dev — default) ─────────────────────────────────────
 .PHONY: up
-up: check-env ## Start client container
+up: check-env ## Start Vite dev server in Docker with HMR (port 5173, code bind-mounted)
 	$(COMPOSE) up -d
 
 .PHONY: down
 down: ## Stop and remove container
 	$(COMPOSE) down
-
-.PHONY: rebuild
-rebuild: check-env ## Rebuild image and restart (required after VITE_* changes)
-	$(COMPOSE) up -d --build
 
 .PHONY: restart
 restart: ## Restart container
@@ -75,5 +68,23 @@ logs: ## Tail container logs
 	$(COMPOSE) logs -f --tail=100
 
 .PHONY: shell
-shell: ## Shell inside client (nginx) container
+shell: ## Shell inside client container
 	$(COMPOSE) exec client sh
+
+# ── Docker (prod) ──────────────────────────────────────────────
+.PHONY: prod-build
+prod-build: check-env ## Build production image (Dockerfile, reads VITE_* from .env)
+	$(COMPOSE_PROD) build
+
+.PHONY: prod-up
+prod-up: check-env ## Start production client (nginx, built static)
+	$(COMPOSE_PROD) up -d --build
+
+.PHONY: prod-down
+prod-down: ## Stop and remove production container
+	$(COMPOSE_PROD) down
+
+# ── Deprecated aliases (kept for backward compatibility) ───────
+.PHONY: build rebuild
+build: prod-build  ## Deprecated: use prod-build
+rebuild: prod-up   ## Deprecated: use prod-up
