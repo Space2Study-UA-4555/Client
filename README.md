@@ -64,7 +64,9 @@ $ npm install
 
 ### Local Docker setup
 
-Requirements: Docker, Docker Compose and Make.
+Requirements: Docker, Docker Compose and Make. The **default** Docker setup is a
+development environment: the source is bind-mounted and the Vite dev server runs
+with HMR, so code changes reload live — no rebuild needed.
 
 First-time setup (creates `.env` from `.env.example`):
 
@@ -72,43 +74,48 @@ First-time setup (creates `.env` from `.env.example`):
 $ make setup
 ```
 
-Review the generated `.env`, then build and start the client:
+Review the generated `.env`, then start the dev server:
 
 ```shell
-$ make build
 $ make up
 ```
 
 The client is available at:
 
 ```text
-http://localhost:8090
+http://localhost:5173
 ```
 
-Any change to a `VITE_*` value is embedded at build time, so rebuild the image
-after changing it:
-
-```shell
-$ make rebuild
-```
+`VITE_*` values are read from `.env` at runtime by the dev server — no rebuild
+needed when you change them, just `make restart`.
 
 Useful commands:
 
 ```shell
 $ make logs   # tail container logs
 $ make ps     # container status
+$ make shell  # shell inside the client container
 $ make down   # stop and remove the container
 ```
 
-The `make build`, `make up` and `make rebuild` targets fail early with a clear
-message if `.env` is missing — run `make setup` first.
+Dependencies are installed inside the container on start (cached in a named
+volume). After changing `package.json`, reinstall with `make down && make up`.
 
-This Docker setup builds the app and serves the static files through nginx. It is
-**not** a Vite hot-reload development server — for live reload use `npm run start`.
+The `make up` and `make prod-*` targets fail early with a clear message if `.env`
+is missing — run `make setup` first.
 
-The compose file ships Traefik labels but no Traefik service: a shared/external
-Traefik instance is expected. Without Traefik, the client is reachable directly
-at `http://localhost:8090`.
+For a production-like build (multi-stage `Dockerfile`, static files served by
+nginx — **not** hot-reload) use the `prod-*` targets, which read
+`docker-compose.prod.yml`:
+
+```shell
+$ make prod-up      # build the image and serve via nginx on http://localhost:8090
+$ make prod-down    # stop it
+```
+
+The compose files ship Traefik labels but no Traefik service: a shared/external
+Traefik instance is expected (`https://s2s.docker.localhost`). Without Traefik, the
+dev server is reachable directly at `http://localhost:5173`.
 
 
 ## Usage

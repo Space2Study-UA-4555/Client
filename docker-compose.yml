@@ -1,21 +1,29 @@
+# Default = DEV. Local development with the Vite dev server + HMR.
+# The app runs on a stock node image with the source bind-mounted — no build step,
+# no Dockerfile needed here. Production lives in docker-compose.prod.yml (uses Dockerfile).
 services:
 
   client:
-    build:
-      context: .
-      args:
-        VITE_API_BASE_PATH: ${VITE_API_BASE_PATH}
-        VITE_GMAIL_CLIENT_ID: ${VITE_GMAIL_CLIENT_ID:-}
-        VITE_APP_IMG_URL: ${VITE_APP_IMG_URL:-}
-        VITE_APP_IMG_USER_URL: ${VITE_APP_IMG_USER_URL:-}
-        VITE_APP_TINY_MCE_API_KEY: ${VITE_APP_TINY_MCE_API_KEY:-}
+    image: node:22-alpine
     container_name: s2s-client
-    restart: no
+    restart: unless-stopped
+    working_dir: /app
+    # Vite reads VITE_* vars from .env at dev time as well.
+    env_file: .env
+    environment:
+      HUSKY: "0"                    # skip husky git-hook install during `npm install`
+      # On Docker Desktop (macOS/Windows) bind-mount FS events may not propagate;
+      # add the next line to force polling if HMR doesn't trigger (native inotify works on Linux):
+      # CHOKIDAR_USEPOLLING: "true"
+    # Install deps into the named volume, then run Vite on port 5173.
+    # --no-open: there is no xdg-open in the container (vite.config has open: true).
+    # Port 5173 avoids clashing with the backend on host port 3000.
+    command: sh -c "npm install && npm run start -- --host --no-open --port 5173"
     ports:
-      - "8090:8080"
-    # Traefik labels are used only when a shared/external Traefik instance is running.
-    # There is no Traefik service in this compose file. Without Traefik,
-    # the client is reachable directly at http://localhost:8090.
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - client_node_modules:/app/node_modules
     labels:
       traefik.enable: "true"
       traefik.http.routers.s2s-http.rule: "Host(`s2s.docker.localhost`)"
@@ -24,4 +32,7 @@ services:
       traefik.http.routers.s2s-https.rule: "Host(`s2s.docker.localhost`)"
       traefik.http.routers.s2s-https.entrypoints: https
       traefik.http.routers.s2s-https.tls: "true"
-      traefik.http.services.s2s.loadbalancer.server.port: "8080"
+      traefik.http.services.s2s.loadbalancer.server.port: "5173"
+
+volumes:
+  client_node_modules:
