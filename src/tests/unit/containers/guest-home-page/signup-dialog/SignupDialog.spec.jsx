@@ -128,5 +128,32 @@ describe('Signup dialog test', () => {
         })
       )
     })
+
+    it('should show email confirmation modal after successful signup', async () => {
+      fireEvent.change(screen.getByLabelText(/common.labels.firstName/i), {
+        target: { value: 'John' }
+      })
+      fireEvent.change(screen.getByLabelText(/common.labels.lastName/i), {
+        target: { value: 'Doe' }
+      })
+      fireEvent.change(screen.getByLabelText(/common.labels.email/i), {
+        target: { value: 'john@mail.com' }
+      })
+      fireEvent.change(screen.getByLabelText(/common.labels.password/i), {
+        target: { value: 'passTest1' }
+      })
+      fireEvent.change(
+        screen.getByLabelText(/common.labels.confirmPassword/i),
+        { target: { value: 'passTest1' } }
+      )
+      fireEvent.click(screen.getByTestId('agreement'))
+
+      fireEvent.click(screen.getByText('common.labels.signup'))
+
+      await waitFor(() => {
+        expect(screen.getByText('signup.confirmEmailTitle')).toBeInTheDocument()
+      })
+      expect(screen.getByText('common.confirmButton')).toBeInTheDocument()
+    })
   })
 })

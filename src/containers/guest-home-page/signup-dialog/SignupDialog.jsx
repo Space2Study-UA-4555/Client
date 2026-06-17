@@ -4,34 +4,48 @@ import { useTranslation } from 'react-i18next'
 
 import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
 import SignupForm from '~/containers/guest-home-page/signup-form/SignupForm'
+import NotificationModal from '~/containers/guest-home-page/notification-modal/NotificationModal'
 import useForm from '~/hooks/use-form'
 import { useSignUpMutation } from '~/services/auth-service'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import studentImg from '~/assets/img/signup-dialog/student.svg'
 import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
+import confirmEmailIcon from '~/assets/img/email-confirmation-modals/success-icon.svg'
 import { signup, snackbarVariants, student, tutor } from '~/constants'
 
 import styles from '~/containers/guest-home-page/signup-dialog/SignupDialog.styles'
 
 const SignupDialog = ({ type = student }) => {
   const { t } = useTranslation()
-  const { closeModal } = useModalContext()
+  const { openModal, closeModal } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const [signUp] = useSignUpMutation()
 
   const img = type === tutor ? tutorImg : studentImg
+
+  const openConfirmEmailModal = (email) => {
+    openModal({
+      component: (
+        <NotificationModal
+          buttonTitle={t('common.confirmButton')}
+          description={`${t('signup.confirmEmailMessage')}${email}${t(
+            'signup.confirmEmailDesc'
+          )}`}
+          img={confirmEmailIcon}
+          onClose={closeModal}
+          title={t('signup.confirmEmailTitle')}
+        />
+      )
+    })
+  }
 
   const { handleInputChange, handleBlur, handleSubmit, data, errors } = useForm(
     {
       onSubmit: async () => {
         try {
           await signUp({ ...data, role: type }).unwrap()
-          setAlert({
-            severity: snackbarVariants.success,
-            message: 'signup.confirmEmailTitle'
-          })
-          closeModal()
+          openConfirmEmailModal(data.email)
         } catch (e) {
           setAlert({
             severity: snackbarVariants.error,
