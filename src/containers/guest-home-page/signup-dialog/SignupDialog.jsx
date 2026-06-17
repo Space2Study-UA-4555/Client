@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
@@ -6,6 +7,7 @@ import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
 import SignupForm from '~/containers/guest-home-page/signup-form/SignupForm'
 import NotificationModal from '~/containers/guest-home-page/notification-modal/NotificationModal'
 import useForm from '~/hooks/use-form'
+import useConfirm from '~/hooks/use-confirm'
 import { useSignUpMutation } from '~/services/auth-service'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
@@ -20,7 +22,12 @@ const SignupDialog = ({ type = student }) => {
   const { t } = useTranslation()
   const { openModal, closeModal } = useModalContext()
   const { setAlert } = useSnackBarContext()
+  const { setNeedConfirmation } = useConfirm()
   const [signUp] = useSignUpMutation()
+
+  useEffect(() => {
+    setNeedConfirmation(true)
+  }, [setNeedConfirmation])
 
   const img = type === tutor ? tutorImg : studentImg
 

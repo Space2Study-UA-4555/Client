@@ -6,6 +6,7 @@ import { vi } from 'vitest'
 const mockSelector = vi.fn()
 const unwrap = vi.fn().mockResolvedValue({ userId: '1', userEmail: 'a@a.com' })
 const signUp = vi.fn().mockReturnValue({ unwrap })
+const setNeedConfirmation = vi.fn()
 
 const mockState = {
   appMain: { authLoading: false }
@@ -21,7 +22,7 @@ vi.mock('react-redux', async () => {
 
 vi.mock('~/hooks/use-confirm', () => {
   return {
-    default: () => ({ setNeedConfirmation: () => true })
+    default: () => ({ setNeedConfirmation })
   }
 })
 
@@ -91,6 +92,10 @@ describe('Signup dialog test', () => {
       const googleButton = screen.getByText('Google')
 
       expect(googleButton).toBeInTheDocument()
+    })
+
+    it('should require confirmation on close', () => {
+      expect(setNeedConfirmation).toHaveBeenCalledWith(true)
     })
 
     it('should sign up user after submitting filled form', async () => {

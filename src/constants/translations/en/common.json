@@ -3,6 +3,10 @@
   "about": "About us",
   "yes": "Yes",
   "no": "No",
+  "confirmClose": {
+    "title": "Please Confirm",
+    "message": "Are you certain you want to close? Any unsaved changes will be lost"
+  },
   "from": "From",
   "to": "To",
   "of": "of",

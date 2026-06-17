@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
+import useConfirm from '~/hooks/use-confirm'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 
 interface PopupDialogProps {
@@ -13,18 +14,32 @@ interface PopupDialogProps {
   paperProps: PaperProps
   timerId: NodeJS.Timeout | null
   closeModalAfterDelay: (delay?: number) => void
+  closeModal: () => void
 }
 
 const PopupDialog: FC<PopupDialogProps> = ({
   content,
   paperProps,
   timerId,
-  closeModalAfterDelay
+  closeModalAfterDelay,
+  closeModal
 }) => {
   const { isMobile } = useBreakpoints()
+  const { checkConfirmation } = useConfirm()
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
+
+  const handleClose = async () => {
+    const confirmed = await checkConfirmation({
+      message: 'common.confirmClose.message',
+      title: 'common.confirmClose.title'
+    })
+
+    if (confirmed) {
+      closeModal()
+    }
+  }
 
   return (
     <Dialog
@@ -41,7 +56,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
         onMouseOver={handleMouseOver}
         sx={styles.box}
       >
-        <IconButton sx={styles.icon}>
+        <IconButton onClick={() => void handleClose()} sx={styles.icon}>
           <CloseIcon />
         </IconButton>
         <Box sx={styles.contentWraper}>{content}</Box>
