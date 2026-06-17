@@ -15,6 +15,10 @@ export const styles = {
     whiteSpace: 'nowrap',
     margin: '0 10px'
   },
+  disabledButton: {
+    opacity: 0.5,
+    pointerEvents: 'none'
+  },
   underlineText: {
     fontWeight: '500',
     color: 'primary.900',
