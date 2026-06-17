@@ -98,6 +98,25 @@ describe('Signup dialog test', () => {
       expect(setNeedConfirmation).toHaveBeenCalledWith(true)
     })
 
+    it('should show empty field error on blur of empty first name', () => {
+      const input = screen.getByLabelText(/common.labels.firstName/i)
+      fireEvent.focusOut(input)
+
+      expect(
+        screen.getByText('common.errorMessages.emptyField')
+      ).toBeInTheDocument()
+    })
+
+    it('should show email format error on blur of invalid email', () => {
+      const input = screen.getByLabelText(/common.labels.email/i)
+      fireEvent.change(input, { target: { value: 'invalid' } })
+      fireEvent.focusOut(input)
+
+      expect(
+        screen.getByText('common.errorMessages.emailValid')
+      ).toBeInTheDocument()
+    })
+
     it('should sign up user after submitting filled form', async () => {
       fireEvent.change(screen.getByLabelText(/common.labels.firstName/i), {
         target: { value: 'John' }

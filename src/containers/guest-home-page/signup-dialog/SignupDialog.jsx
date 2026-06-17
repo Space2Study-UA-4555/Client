@@ -8,6 +8,13 @@ import SignupForm from '~/containers/guest-home-page/signup-form/SignupForm'
 import NotificationModal from '~/containers/guest-home-page/notification-modal/NotificationModal'
 import useForm from '~/hooks/use-form'
 import useConfirm from '~/hooks/use-confirm'
+import {
+  firstName,
+  lastName,
+  email,
+  password,
+  confirmPassword
+} from '~/utils/validations/signup'
 import { useSignUpMutation } from '~/services/auth-service'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
@@ -66,7 +73,8 @@ const SignupDialog = ({ type = student }) => {
         email: '',
         password: '',
         confirmPassword: ''
-      }
+      },
+      validations: { firstName, lastName, email, password, confirmPassword }
     }
   )
 
