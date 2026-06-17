@@ -1,17 +1,19 @@
-import { screen } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/react'
 import { renderWithProviders } from '~tests/test-utils'
 import EmailConfirmModal from '~/containers/email-confirm-modal/EmailConfirmModal'
 import useAxios from '~/hooks/use-axios'
 import { vi } from 'vitest'
 
 const closeModal = vi.fn()
+const openModal = vi.fn()
 
 vi.mock('~/hooks/use-axios')
 
 describe('EmailConfirmModal test', () => {
   const props = {
     confirmToken: 'test',
-    closeModal: closeModal
+    closeModal: closeModal,
+    openModal: openModal
   }
 
   it('should render negative-scenario image and message (BAD_CONFIRM_TOKEN)', async () => {
@@ -48,6 +50,26 @@ describe('EmailConfirmModal test', () => {
     expect(modalImg).toBeInTheDocument()
     expect(title).toBeInTheDocument()
     expect(description).toBeInTheDocument()
+  })
+
+  it('should render success message and open login on button click', () => {
+    const fakeData = {
+      error: null,
+      loading: false,
+      response: { data: {} }
+    }
+    useAxios.mockImplementation(() => fakeData)
+    renderWithProviders(<EmailConfirmModal {...props} />)
+
+    const title = screen.getByText('modals.emailConfirm')
+    const button = screen.getByText('modals.goToLogin')
+
+    expect(title).toBeInTheDocument()
+    expect(button).toBeInTheDocument()
+
+    fireEvent.click(button)
+
+    expect(openModal).toHaveBeenCalledTimes(1)
   })
 
   it('should render Loader - (loading from useAxios)', async () => {

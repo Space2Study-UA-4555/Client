@@ -20,7 +20,7 @@ import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import studentImg from '~/assets/img/signup-dialog/student.svg'
 import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
-import confirmEmailIcon from '~/assets/img/email-confirmation-modals/success-icon.svg'
+import confirmEmailIcon from '~/assets/img/guest-home-page/info.svg'
 import { signup, snackbarVariants, student, tutor } from '~/constants'
 
 import styles from '~/containers/guest-home-page/signup-dialog/SignupDialog.styles'
