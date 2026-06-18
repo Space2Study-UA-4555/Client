@@ -1,12 +1,94 @@
-import Box from '@mui/material/Box'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+
+import AppButton from '~/components/app-button/AppButton'
+import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
+import { useStepContext } from '~/context/step-context'
+import { categoryService } from '~/services/category-service'
+import { subjectService } from '~/services/subject-service'
+import { ButtonVariantEnum } from '~/types'
+import img from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
 
-const SubjectsStep = ({ btnsBox }) => {
+const SubjectsStep = ({ btnsBox, stepLabel }) => {
+  const { t } = useTranslation()
+  const { handleStepData } = useStepContext()
+
+  const [category, setCategory] = useState(null)
+  const [subject, setSubject] = useState(null)
+
+  const handleCategoryChange = (_, value) => {
+    const categoryId = value?._id ?? null
+
+    setCategory(categoryId)
+    setSubject(null)
+    handleStepData(stepLabel, [])
+  }
+
+  const handleSubjectChange = (_, value) => {
+    const subjectData = value
+      ? [
+          {
+            category,
+            subject: value._id
+          }
+        ]
+      : []
+
+    setSubject(value?._id ?? null)
+    handleStepData(stepLabel, subjectData)
+  }
+
   return (
     <Box sx={styles.container}>
+      <Box sx={styles.imgContainer}>
+        <Box component='img' src={img} sx={styles.img} />
+      </Box>
+
       <Box sx={styles.rigthBox}>
-        Subjects step
+        <Box sx={styles.form}>
+          <Typography sx={styles.title}>
+            {t('becomeTutor.categories.title')}
+          </Typography>
+
+          <AsyncAutocomplete
+            fetchOnFocus
+            labelField='name'
+            onChange={handleCategoryChange}
+            service={categoryService.getCategoriesNames}
+            textFieldProps={{
+              label: t('becomeTutor.categories.mainSubjectsLabel')
+            }}
+            value={category}
+            valueField='_id'
+          />
+
+          <AsyncAutocomplete
+            disabled={!category}
+            fetchCondition={Boolean(category)}
+            fetchOnFocus
+            labelField='name'
+            onChange={handleSubjectChange}
+            service={() => subjectService.getSubjectsNames(category)}
+            textFieldProps={{
+              label: t('becomeTutor.categories.subjectLabel')
+            }}
+            value={subject}
+            valueField='_id'
+          />
+
+          <AppButton
+            disabled
+            sx={styles.addSubjectBtn}
+            variant={ButtonVariantEnum.Tonal}
+          >
+            {t('becomeTutor.categories.btnText')}
+          </AppButton>
+        </Box>
+
         {btnsBox}
       </Box>
     </Box>
