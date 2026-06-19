@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Box from '@mui/material/Box'
@@ -15,10 +15,22 @@ import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.
 
 const SubjectsStep = ({ btnsBox, stepLabel }) => {
   const { t } = useTranslation()
-  const { handleStepData } = useStepContext()
-
+  const { handleStepData, stepData } = useStepContext()
   const [category, setCategory] = useState(null)
   const [subject, setSubject] = useState(null)
+
+  useEffect(() => {
+    const savedSubjects = stepLabel ? stepData?.[stepLabel] : null
+    const saved = Array.isArray(savedSubjects) ? savedSubjects[0] : null
+
+    setCategory(saved?.category ?? null)
+    setSubject(saved?.subject ?? null)
+  }, [stepData, stepLabel])
+
+  const getSubjectsNames = useCallback(
+    () => subjectService.getSubjectsNames(category),
+    [category]
+  )
 
   const handleCategoryChange = (_, value) => {
     const categoryId = value?._id ?? null
@@ -45,7 +57,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
   return (
     <Box sx={styles.container}>
       <Box sx={styles.imgContainer}>
-        <Box component='img' src={img} sx={styles.img} />
+        <Box alt='' component='img' src={img} sx={styles.img} />
       </Box>
 
       <Box sx={styles.rigthBox}>
@@ -72,7 +84,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
             fetchOnFocus
             labelField='name'
             onChange={handleSubjectChange}
-            service={() => subjectService.getSubjectsNames(category)}
+            service={getSubjectsNames}
             textFieldProps={{
               label: t('becomeTutor.categories.subjectLabel')
             }}
