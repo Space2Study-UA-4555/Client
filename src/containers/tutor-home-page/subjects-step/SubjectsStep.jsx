@@ -37,15 +37,18 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
 
     setCategory(categoryId)
     setSubject(null)
-    handleStepData(stepLabel, [])
+    handleStepData(
+      stepLabel,
+      categoryId ? [{ category: categoryId, subject: null }] : []
+    )
   }
 
   const handleSubjectChange = (_, value) => {
-    const subjectData = value
+    const subjectData = category
       ? [
           {
             category,
-            subject: value._id
+            subject: value?._id ?? null
           }
         ]
       : []
