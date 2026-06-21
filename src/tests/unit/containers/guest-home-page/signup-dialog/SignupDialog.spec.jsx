@@ -41,6 +41,28 @@ vi.mock('~/services/auth-service', async () => {
   }
 })
 
+const fillAndSubmitForm = () => {
+  const values = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@mail.com',
+    password: 'passTest1',
+    confirmPassword: 'passTest1'
+  }
+
+  Object.entries(values).forEach(([field, value]) => {
+    fireEvent.change(
+      screen.getByLabelText(`common.labels.${field}`, { exact: false }),
+      {
+        target: { value }
+      }
+    )
+  })
+
+  fireEvent.click(screen.getByTestId('agreement'))
+  fireEvent.click(screen.getByText('common.labels.signup'))
+}
+
 describe('Signup dialog test', () => {
   it('should render student head text by default', () => {
     renderWithProviders(<SignupDialog />)
@@ -118,25 +140,7 @@ describe('Signup dialog test', () => {
     })
 
     it('should sign up user after submitting filled form', async () => {
-      fireEvent.change(screen.getByLabelText(/common.labels.firstName/i), {
-        target: { value: 'John' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.lastName/i), {
-        target: { value: 'Doe' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.email/i), {
-        target: { value: 'john@mail.com' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.password/i), {
-        target: { value: 'passTest1' }
-      })
-      fireEvent.change(
-        screen.getByLabelText(/common.labels.confirmPassword/i),
-        { target: { value: 'passTest1' } }
-      )
-      fireEvent.click(screen.getByTestId('agreement'))
-
-      fireEvent.click(screen.getByText('common.labels.signup'))
+      fillAndSubmitForm()
 
       await waitFor(() => {
         expect(signUp).toHaveBeenCalledTimes(1)
@@ -154,25 +158,7 @@ describe('Signup dialog test', () => {
     })
 
     it('should show email confirmation modal after successful signup', async () => {
-      fireEvent.change(screen.getByLabelText(/common.labels.firstName/i), {
-        target: { value: 'John' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.lastName/i), {
-        target: { value: 'Doe' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.email/i), {
-        target: { value: 'john@mail.com' }
-      })
-      fireEvent.change(screen.getByLabelText(/common.labels.password/i), {
-        target: { value: 'passTest1' }
-      })
-      fireEvent.change(
-        screen.getByLabelText(/common.labels.confirmPassword/i),
-        { target: { value: 'passTest1' } }
-      )
-      fireEvent.click(screen.getByTestId('agreement'))
-
-      fireEvent.click(screen.getByText('common.labels.signup'))
+      fillAndSubmitForm()
 
       await waitFor(() => {
         expect(screen.getByText('signup.confirmEmailTitle')).toBeInTheDocument()

@@ -55,6 +55,14 @@ describe('Popup dialog test', () => {
   })
 })
 
+describe('Popup dialog test with hideCloseIcon', () => {
+  it('should not render close icon when hideCloseIcon is true', () => {
+    render(<PopupDialog {...props} hideCloseIcon />)
+
+    expect(screen.queryByTestId('CloseIcon')).not.toBeInTheDocument()
+  })
+})
+
 describe('Popup dialog test with timerId', () => {
   const propsWithTimerId = { ...props, timerId: 21 }
   beforeEach(() => {

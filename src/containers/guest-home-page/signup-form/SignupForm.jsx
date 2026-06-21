@@ -109,7 +109,10 @@ const SignupForm = ({
       <Box sx={styles.agreement}>
         <Checkbox
           checked={agreement}
-          inputProps={{ 'data-testid': 'agreement' }}
+          inputProps={{
+            'data-testid': 'agreement',
+            'aria-label': t('signup.iAgree')
+          }}
           onChange={(event) => setAgreement(event.target.checked)}
         />
         <Typography variant='body2'>

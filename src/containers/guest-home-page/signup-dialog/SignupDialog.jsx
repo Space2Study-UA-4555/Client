@@ -50,7 +50,8 @@ const SignupDialog = ({ type = student }) => {
           onClose={closeModal}
           title={t('signup.confirmEmailTitle')}
         />
-      )
+      ),
+      hideCloseIcon: true
     })
   }
 
@@ -61,9 +62,10 @@ const SignupDialog = ({ type = student }) => {
           await signUp({ ...data, role: type }).unwrap()
           openConfirmEmailModal(data.email)
         } catch (e) {
+          const errorCode = e?.data?.code
           setAlert({
             severity: snackbarVariants.error,
-            message: `errors.${e.data.code}`
+            message: errorCode ? `errors.${errorCode}` : 'errors.UNKNOWN_ERROR'
           })
         }
       },

@@ -13,6 +13,11 @@ describe('signup validations', () => {
       expect(lastName('')).toBe('common.errorMessages.emptyField')
     })
 
+    it('should return empty field error for whitespace-only value', () => {
+      expect(firstName('   ')).toBe('common.errorMessages.emptyField')
+      expect(lastName('   ')).toBe('common.errorMessages.emptyField')
+    })
+
     it('should return alphabetic-only error for non-alphabetic value', () => {
       expect(firstName('John1')).toBe('common.errorMessages.nameAlphabeticOnly')
     })

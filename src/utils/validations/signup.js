@@ -1,21 +1,16 @@
 import { emptyField, textField } from './common'
-import { email, password, confirmPassword } from './login'
 
 const nameLength = textField(2, 15)
 
-const nameField = (value) => {
-  if (!RegExp(/^[a-zа-яєії ]+$/i).test(value)) {
-    return 'common.errorMessages.nameAlphabeticOnly'
-  }
-  return nameLength(value)
+const validateName = (value) => {
+  const trimmedValue = value.trim()
+  const helperText = /^[a-zа-яєії]+$/i.test(trimmedValue)
+    ? nameLength(trimmedValue)
+    : 'common.errorMessages.nameAlphabeticOnly'
+  return emptyField(trimmedValue, 'common.errorMessages.emptyField', helperText)
 }
 
-export const firstName = (value) => {
-  return emptyField(value, 'common.errorMessages.emptyField', nameField(value))
-}
+export const firstName = validateName
+export const lastName = validateName
 
-export const lastName = (value) => {
-  return emptyField(value, 'common.errorMessages.emptyField', nameField(value))
-}
-
-export { email, password, confirmPassword }
+export { email, password, confirmPassword } from './login'

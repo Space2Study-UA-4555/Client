@@ -30,7 +30,8 @@ const GuestHomePage = () => {
             confirmToken={confirmToken}
             openModal={openModal}
           />
-        )
+        ),
+        hideCloseIcon: true
       })
     resetToken &&
       openModal({

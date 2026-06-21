@@ -27,7 +27,11 @@ const GoogleLogin = ({ type, buttonWidth, role, disabled = false }) => {
         </Typography>
       </Box>
 
-      <Box sx={disabled ? styles.disabledButton : null}>
+      <Box
+        aria-disabled={disabled}
+        inert={disabled ? '' : undefined}
+        sx={disabled ? styles.disabledButton : null}
+      >
         <GoogleButton
           buttonWidth={buttonWidth}
           role={role}
