@@ -1,30 +1,38 @@
-import { fadeAnimation } from '~/styles/app-theme/custom-animations'
-
 export const styles = {
   container: {
     display: 'flex',
-    justifyContent: 'space-between',
-    gap: '40px',
-    height: { sm: '485px' },
-    ...fadeAnimation
+    flexDirection: { xs: 'column', sm: 'row' },
+    gap: { xs: 0, sm: '80px' },
+    width: '100%'
   },
-  imgContainer: {
-    display: 'flex',
-    flex: 1,
-    maxWidth: '432px',
-    aspectRatio: { xs: '4/3', sm: 'auto' },
-    pb: { xs: '16px', sm: '52px' }
+  imgWrapper: {
+    display: { xs: 'none', sm: 'none', md: 'flex' },
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: '0 0 auto'
   },
   img: {
+    maxWidth: { md: '280px' },
     width: '100%',
-    m: { sm: 0, xs: '0 auto' }
+    objectFit: 'contain'
   },
-  rigthBox: {
-    maxWidth: '432px',
+  imgMobile: {
+    display: { xs: 'flex', sm: 'none' },
+    justifyContent: 'center',
+    mb: '16px',
+    '& img': {
+      maxWidth: '200px',
+      width: '100%'
+    }
+  },
+  rightContent: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    m: { md: 0, xs: '0 auto' },
-    pt: 0
+    flex: 1,
+    gap: '24px'
+  },
+  description: {
+    typography: { xs: 'body2', sm: 'body1' },
+    color: 'text.secondary'
   }
 }
