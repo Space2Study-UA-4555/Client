@@ -5,6 +5,7 @@ import { useCallback } from 'react'
 import { useModalContext } from '~/context/modal-context'
 import { useTranslation } from 'react-i18next'
 import imgReject from '~/assets/img/email-confirmation-modals/not-success-icon.svg'
+import imgSuccess from '~/assets/img/email-confirmation-modals/success-icon.svg'
 import LoginDialog from '~/containers/guest-home-page/login-dialog/LoginDialog'
 import useAxios from '~/hooks/use-axios'
 import { AuthService } from '~/services/auth-service'
@@ -33,20 +34,20 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
     return <Loader size={100} />
   }
 
-  if (
-    (error && error.code === 'BAD_CONFIRM_TOKEN') ||
-    (error && error.code === 'DOCUMENT_NOT_FOUND' && response === null)
-  ) {
+  if (!error && response !== null) {
     return (
       <Box sx={styles.box}>
         <ImgTitleDescription
-          description={t('modals.emailReject.badToken')}
-          img={imgReject}
+          img={imgSuccess}
           style={styles}
-          title={t('modals.emailNotConfirm')}
+          title={t('modals.emailConfirm')}
         />
-        <Button onClick={closeModal} sx={styles.button} variant='contained'>
-          {t('common.confirmButton')}
+        <Button
+          onClick={openLoginDialog}
+          sx={styles.button}
+          variant='contained'
+        >
+          {t('modals.goToLogin')}
         </Button>
       </Box>
     )
@@ -71,6 +72,20 @@ const EmailConfirmModal = ({ confirmToken, openModal }) => {
       </Box>
     )
   }
+
+  return (
+    <Box sx={styles.box}>
+      <ImgTitleDescription
+        description={t('modals.emailReject.badToken')}
+        img={imgReject}
+        style={styles}
+        title={t('modals.emailNotConfirm')}
+      />
+      <Button onClick={closeModal} sx={styles.button} variant='contained'>
+        {t('common.confirmButton')}
+      </Button>
+    </Box>
+  )
 }
 
 export default EmailConfirmModal

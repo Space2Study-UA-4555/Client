@@ -1,0 +1,113 @@
+import { useEffect } from 'react'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import { useTranslation } from 'react-i18next'
+
+import GoogleLogin from '~/containers/guest-home-page/google-login/GoogleLogin'
+import SignupForm from '~/containers/guest-home-page/signup-form/SignupForm'
+import NotificationModal from '~/containers/guest-home-page/notification-modal/NotificationModal'
+import useForm from '~/hooks/use-form'
+import useConfirm from '~/hooks/use-confirm'
+import {
+  firstName,
+  lastName,
+  email,
+  password,
+  confirmPassword
+} from '~/utils/validations/signup'
+import { useSignUpMutation } from '~/services/auth-service'
+import { useModalContext } from '~/context/modal-context'
+import { useSnackBarContext } from '~/context/snackbar-context'
+import studentImg from '~/assets/img/signup-dialog/student.svg'
+import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
+import confirmEmailIcon from '~/assets/img/guest-home-page/info.svg'
+import { signup, snackbarVariants, student, tutor } from '~/constants'
+
+import styles from '~/containers/guest-home-page/signup-dialog/SignupDialog.styles'
+
+const SignupDialog = ({ type = student }) => {
+  const { t } = useTranslation()
+  const { openModal, closeModal } = useModalContext()
+  const { setAlert } = useSnackBarContext()
+  const { setNeedConfirmation } = useConfirm()
+  const [signUp] = useSignUpMutation()
+
+  useEffect(() => {
+    setNeedConfirmation(true)
+  }, [setNeedConfirmation])
+
+  const img = type === tutor ? tutorImg : studentImg
+
+  const openConfirmEmailModal = (email) => {
+    openModal({
+      component: (
+        <NotificationModal
+          buttonTitle={t('common.confirmButton')}
+          description={`${t('signup.confirmEmailMessage')}${email}${t(
+            'signup.confirmEmailDesc'
+          )}`}
+          img={confirmEmailIcon}
+          onClose={closeModal}
+          title={t('signup.confirmEmailTitle')}
+        />
+      ),
+      hideCloseIcon: true
+    })
+  }
+
+  const { handleInputChange, handleBlur, handleSubmit, data, errors } = useForm(
+    {
+      onSubmit: async () => {
+        try {
+          await signUp({ ...data, role: type }).unwrap()
+          openConfirmEmailModal(data.email)
+        } catch (e) {
+          const errorCode = e?.data?.code
+          setAlert({
+            severity: snackbarVariants.error,
+            message: errorCode ? `errors.${errorCode}` : 'errors.UNKNOWN_ERROR'
+          })
+        }
+      },
+      initialValues: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      },
+      validations: { firstName, lastName, email, password, confirmPassword }
+    }
+  )
+
+  return (
+    <Box sx={styles.root}>
+      <Box sx={styles.imgContainer}>
+        <Box alt='signup' component='img' src={img} sx={styles.img} />
+      </Box>
+
+      <Box sx={styles.formContainer}>
+        <Typography sx={styles.title} variant='h2'>
+          {t(`signup.head.${type}`)}
+        </Typography>
+        <Box sx={styles.form}>
+          <SignupForm
+            data={data}
+            errors={errors}
+            handleBlur={handleBlur}
+            handleChange={handleInputChange}
+            handleSubmit={handleSubmit}
+          />
+          <GoogleLogin
+            buttonWidth={styles.form.maxWidth}
+            disabled
+            role={type}
+            type={signup}
+          />
+        </Box>
+      </Box>
+    </Box>
+  )
+}
+
+export default SignupDialog

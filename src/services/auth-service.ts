@@ -23,7 +23,7 @@ export const AuthService = {
   },
   confirmEmail: (confirmToken: string): Promise<AxiosResponse> => {
     const confirmUrl = createUrlPath(URLs.auth.confirm, confirmToken)
-    return axiosClient.get(confirmUrl)
+    return axiosClient.patch(confirmUrl)
   },
   forgotPassword: (userEmail: string): Promise<AxiosResponse> => {
     return axiosClient.post(URLs.auth.forgotPassword, userEmail)

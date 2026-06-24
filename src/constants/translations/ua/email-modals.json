@@ -1,5 +1,6 @@
 {
   "emailConfirm": "Ваш email успішно перевірено!",
+  "goToLogin": "Перейти до входу",
   "emailNotConfirm": "Ваш email не перевірено!",
   "emailAlreadyConfirm": "Ваш email вже перевірено!",
   "emailReject": {
