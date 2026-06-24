@@ -5,10 +5,10 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AppSelect from '~/components/app-select/AppSelect'
 import AppTextArea from '~/components/app-text-area/AppTextArea'
 
-import { getCountries, getCities } from '~/services/locationApi'
-import useSteps from '~/hooks/use-steps'
+import { getCountries, getStates, getCities } from '~/services/locationApi'
+import { useStepContext } from '~/context/step-context'
 
-import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
+import { styles } from './GeneralInfoStep.styles'
 
 const NAME_MAX = 30
 const STATUS_MAX = 200
@@ -16,28 +16,36 @@ const STATUS_MAX = 200
 const nameRegex = /^[A-Za-zА-Яа-яЁёІіЇїЄє]+(?: [A-Za-zА-Яа-яЁёІіЇїЄє]+)*$/
 
 const GeneralInfoStep = ({ btnsBox }) => {
-  const { stepOperation, activeStep, setStepError } = useSteps()
-  const { next } = stepOperation
+  const { stepData, handleStepData } = useStepContext()
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [country, setCountry] = useState('')
-  const [city, setCity] = useState('')
-  const [status, setStatus] = useState('')
+  const initial = stepData?.generalInfo?.data || {}
+
+  const [firstName, setFirstName] = useState(initial.firstName || '')
+  const [lastName, setLastName] = useState(initial.lastName || '')
+  const [country, setCountry] = useState(initial.country || '')
+  const [state, setState] = useState(initial.state || '')
+  const [city, setCity] = useState(initial.city || '')
+  const [status, setStatus] = useState(initial.professionalSummary || '')
 
   const [countries, setCountries] = useState([])
+  const [states, setStates] = useState([])
   const [cities, setCities] = useState([])
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({
+    firstName: null,
+    lastName: null,
+    country: null,
+    state: null,
+    city: null,
+    status: null
+  })
 
   const firstNameRef = useRef(null)
 
-  // autofocus
   useEffect(() => {
     firstNameRef.current?.focus()
   }, [])
 
-  // ---------------- VALIDATION ----------------
   const validateName = (value) => {
     const trimmed = value.trim()
 
@@ -50,30 +58,34 @@ const GeneralInfoStep = ({ btnsBox }) => {
     return null
   }
 
+  const validateStatus = (value) => {
+    if (!value.trim()) return 'This field cannot be empty'
+    if (value.length > STATUS_MAX) return 'Too long'
+    return null
+  }
+
   const validateAll = () => {
     const newErrors = {
       firstName: validateName(firstName),
       lastName: validateName(lastName),
-      country: !country ? 'Please select a country' : null,
-      city: !city ? 'Please select a city' : null,
-      status: status.length > STATUS_MAX ? 'Too long' : null
+      country: country ? null : 'Please select a country',
+      state: state ? null : 'Please select a state',
+      city: city ? null : 'Please select a city',
+      status: validateStatus(status)
     }
 
     setErrors(newErrors)
-
-    const hasError = Object.values(newErrors).some(Boolean)
-    setStepError(activeStep, hasError)
-
-    return !hasError
   }
 
-  // ---------------- LOAD COUNTRIES ----------------
   useEffect(() => {
+    let cancelled = false
+
     const load = async () => {
       try {
         const res = await getCountries()
-        const data = res.data
+        if (cancelled) return
 
+        const data = res.data
         setCountries(
           data.map((c) => ({
             title: c.name,
@@ -81,21 +93,71 @@ const GeneralInfoStep = ({ btnsBox }) => {
           }))
         )
       } catch (e) {
+        if (cancelled) return
         console.error('Failed to load countries', e)
+        setCountries([])
       }
     }
+
     load()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  // ---------------- LOAD CITIES ----------------
   useEffect(() => {
-    if (!country) return
+    let cancelled = false
+
+    if (!country) {
+      setStates([])
+      setState('')
+      setCities([])
+      setCity('')
+      return
+    }
 
     const load = async () => {
       try {
-        const res = await getCities(country)
-        const data = res.data
+        const res = await getStates(country)
+        if (cancelled) return
 
+        const data = res.data
+        setStates(
+          data.map((s) => ({
+            title: s.name,
+            value: s.iso2
+          }))
+        )
+      } catch (e) {
+        if (cancelled) return
+        console.error('Failed to load states', e)
+        setStates([])
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [country])
+
+  useEffect(() => {
+    let cancelled = false
+
+    if (!country || !state) {
+      setCities([])
+      setCity('')
+      return
+    }
+
+    const load = async () => {
+      try {
+        const res = await getCities(country, state)
+        if (cancelled) return
+
+        const data = res.data
         setCities(
           data.map((c) => ({
             title: c.name,
@@ -103,16 +165,29 @@ const GeneralInfoStep = ({ btnsBox }) => {
           }))
         )
       } catch (e) {
+        if (cancelled) return
         console.error('Failed to load cities', e)
+        setCities([])
       }
     }
-    load()
-  }, [country])
 
-  // ---------------- HANDLE NEXT ----------------
-  const handleNext = () => {
-    if (validateAll()) next()
-  }
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [country, state])
+
+  useEffect(() => {
+    handleStepData('generalInfo', {
+      firstName,
+      lastName,
+      country,
+      state,
+      city,
+      professionalSummary: status
+    })
+  }, [firstName, lastName, country, state, city, status, handleStepData])
 
   return (
     <Box sx={styles.container}>
@@ -125,7 +200,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
           setFirstName(v)
           const err = validateName(v)
           setErrors((prev) => ({ ...prev, firstName: err }))
-          setStepError(activeStep, Boolean(err))
         }}
         value={firstName}
       />
@@ -138,7 +212,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
           setLastName(v)
           const err = validateName(v)
           setErrors((prev) => ({ ...prev, lastName: err }))
-          setStepError(activeStep, Boolean(err))
         }}
         value={lastName}
       />
@@ -149,37 +222,43 @@ const GeneralInfoStep = ({ btnsBox }) => {
         selectTitle='Select country'
         setValue={(v) => {
           setCountry(v)
+          setState('')
           setCity('')
-          setErrors((prev) => ({ ...prev, country: null, city: null }))
-          setStepError(activeStep, false)
+          setErrors((prev) => ({
+            ...prev,
+            country: null,
+            state: null,
+            city: null
+          }))
         }}
         value={country}
       />
 
-      {errors.country && (
-        <Box sx={{ color: 'error.main', fontSize: 12, mt: -1, mb: 1 }}>
-          {errors.country}
-        </Box>
-      )}
-
       <AppSelect
         disabled={!country}
+        fields={states}
+        label='State'
+        selectTitle='Select state'
+        setValue={(v) => {
+          setState(v)
+          setCity('')
+          setErrors((prev) => ({ ...prev, state: null, city: null }))
+        }}
+        value={state}
+      />
+
+      <AppSelect
+        data-testid='city-select'
+        disabled={!state}
         fields={cities}
         label='City'
         selectTitle='Select city'
         setValue={(v) => {
           setCity(v)
           setErrors((prev) => ({ ...prev, city: null }))
-          setStepError(activeStep, false)
         }}
         value={city}
       />
-
-      {errors.city && (
-        <Box sx={{ color: 'error.main', fontSize: 12, mt: -1, mb: 1 }}>
-          {errors.city}
-        </Box>
-      )}
 
       <AppTextArea
         errorMsg={errors.status}
@@ -187,15 +266,14 @@ const GeneralInfoStep = ({ btnsBox }) => {
         onChange={(e) => {
           const v = e.target.value
           setStatus(v)
-          const err = v.length > STATUS_MAX ? 'Too long' : null
+          const err = validateStatus(v)
           setErrors((prev) => ({ ...prev, status: err }))
-          setStepError(activeStep, Boolean(err))
         }}
         title='Describe in short your professional status'
         value={status}
       />
 
-      <Box onClick={handleNext} sx={{ mt: 3 }}>
+      <Box onClick={validateAll} sx={{ mt: 3 }}>
         {btnsBox}
       </Box>
     </Box>

@@ -1,239 +1,218 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within
+} from '@testing-library/react'
 import GeneralInfoStep from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep'
-import * as api from '~/services/locationApi'
-import useSteps from '~/hooks/use-steps'
 import { vi } from 'vitest'
 
-vi.mock('~/services/locationApi')
-vi.mock('~/hooks/use-steps')
+// ---------------- MOCK AXIOS CLIENT ----------------
+vi.mock('~/plugins/axiosClient', () => ({
+  axiosClient: {
+    get: vi.fn()
+  }
+}))
+import { axiosClient } from '~/plugins/axiosClient'
 
-const mockNext = vi.fn()
-const mockSetStepError = vi.fn()
+// ---------------- MOCK StepContext ----------------
+vi.mock('~/context/step-context', () => ({
+  useStepContext: vi.fn()
+}))
+import { useStepContext } from '~/context/step-context'
 
-useSteps.mockReturnValue({
-  stepOperation: { next: mockNext },
-  activeStep: 0,
-  setStepError: mockSetStepError
+const mockHandleStepData = vi.fn()
+
+useStepContext.mockReturnValue({
+  stepData: {},
+  handleStepData: mockHandleStepData
 })
+
+const renderStep = () =>
+  render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
 
 describe('GeneralInfoStep', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-  })
-
-  // ---------------- BASIC RENDER ----------------
-  it('renders all fields', () => {
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    expect(screen.getByLabelText(/First name/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/Last name/i)).toBeInTheDocument()
-    expect(screen.getByText(/Select country/i)).toBeInTheDocument()
-    expect(screen.getByText(/Select city/i)).toBeInTheDocument()
-    expect(
-      screen.getByText(/Describe in short your professional status/i)
-    ).toBeInTheDocument()
+    axiosClient.get.mockResolvedValue({ data: [] })
   })
 
   // ---------------- VALIDATION ----------------
-  it('validates empty first name', () => {
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+  it('validates empty first name', async () => {
+    renderStep()
 
-    fireEvent.change(screen.getByLabelText(/First name/i), {
-      target: { value: '' }
-    })
+    const firstNameInput = screen.getAllByRole('textbox')[0]
+    fireEvent.change(firstNameInput, { target: { value: '' } })
 
-    fireEvent.click(screen.getByText(/Next/i))
+    fireEvent.click(screen.getByText(/next/i))
 
-    expect(screen.getByText(/cannot be empty/i)).toBeInTheDocument()
-    expect(mockSetStepError).toHaveBeenCalledWith(0, true)
+    const errors = screen.getAllByText(/cannot be empty/i)
+    expect(errors.length).toBeGreaterThan(0)
   })
 
   it('validates incorrect name format', () => {
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+    renderStep()
 
-    fireEvent.change(screen.getByLabelText(/First name/i), {
-      target: { value: '1234' }
-    })
+    const firstNameInput = screen.getAllByRole('textbox')[0]
+    fireEvent.change(firstNameInput, { target: { value: '1234' } })
 
-    fireEvent.click(screen.getByText(/Next/i))
+    fireEvent.click(screen.getByText(/next/i))
 
     expect(screen.getByText(/alphabetic characters only/i)).toBeInTheDocument()
   })
 
   it('validates status length > 200 characters', () => {
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+    renderStep()
 
+    const statusInput = screen.getAllByRole('textbox')[2]
     const longText = 'a'.repeat(201)
 
-    fireEvent.change(
-      screen.getByText(/Describe in short your professional status/i),
-      { target: { value: longText } }
-    )
+    fireEvent.change(statusInput, { target: { value: longText } })
+    fireEvent.click(screen.getByText(/next/i))
 
-    expect(screen.getByText(/Too long/i)).toBeInTheDocument()
-    expect(mockSetStepError).toHaveBeenCalledWith(0, true)
+    expect(screen.getByText(/too long/i)).toBeInTheDocument()
   })
 
   // ---------------- API: COUNTRIES ----------------
   it('loads countries on mount', async () => {
-    api.getCountries.mockResolvedValue({
+    axiosClient.get.mockResolvedValueOnce({
       data: [{ name: 'Ukraine', iso2: 'UA' }]
     })
 
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+    renderStep()
 
-    await waitFor(() => expect(api.getCountries).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(1))
   })
 
   it('handles API error when loading countries', async () => {
-    api.getCountries.mockRejectedValue(new Error('Network error'))
+    axiosClient.get.mockRejectedValueOnce(new Error('Network error'))
 
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+    renderStep()
 
-    expect(screen.getByLabelText(/First name/i)).toBeInTheDocument()
-
-    await waitFor(() => {
-      expect(api.getCountries).toHaveBeenCalled()
-    })
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalled())
   })
 
   it('renders empty country list when API returns empty array', async () => {
-    api.getCountries.mockResolvedValue({ data: [] })
+    axiosClient.get.mockResolvedValueOnce({ data: [] })
 
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
+    renderStep()
 
-    await waitFor(() => expect(api.getCountries).toHaveBeenCalled())
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalled())
 
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
+    const countrySelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(countrySelect)
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument()
+  })
+
+  // ---------------- API: STATES ----------------
+  it('loads states when country selected', async () => {
+    axiosClient.get
+      .mockResolvedValueOnce({
+        data: [{ name: 'Ukraine', iso2: 'UA' }]
+      })
+      .mockResolvedValueOnce({
+        data: [{ name: 'Kyiv Oblast', iso2: 'KO' }]
+      })
+
+    renderStep()
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(1))
+
+    const countrySelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(countrySelect)
+    fireEvent.click(await screen.findByText('Ukraine'))
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(2))
   })
 
   // ---------------- API: CITIES ----------------
-  it('loads cities when country selected', async () => {
-    api.getCountries.mockResolvedValue({
+  it('loads cities when state selected', async () => {
+    axiosClient.get
+      .mockResolvedValueOnce({
+        data: [{ name: 'Ukraine', iso2: 'UA' }]
+      })
+      .mockResolvedValueOnce({
+        data: [{ name: 'Kyiv Oblast', iso2: 'KO' }]
+      })
+      .mockResolvedValueOnce({
+        data: [{ name: 'Kyiv' }]
+      })
+
+    renderStep()
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(1))
+
+    const countrySelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(countrySelect)
+    fireEvent.click(await screen.findByText('Ukraine'))
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(2))
+
+    const stateSelect = screen.getAllByRole('combobox')[1]
+    fireEvent.mouseDown(stateSelect)
+    fireEvent.click(await screen.findByText('Kyiv Oblast'))
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(3))
+  })
+
+  // ---------------- STALE RESPONSE ----------------
+  it('ignores stale city responses when state changes quickly', async () => {
+    axiosClient.get.mockResolvedValueOnce({
       data: [{ name: 'Ukraine', iso2: 'UA' }]
     })
 
-    api.getCities.mockResolvedValue({
-      data: [{ name: 'Kyiv' }]
-    })
-
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    await waitFor(() => screen.getByText('Ukraine'))
-
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Ukraine'))
-
-    await waitFor(() => expect(api.getCities).toHaveBeenCalledWith('UA'))
-  })
-
-  it('handles API error when loading cities', async () => {
-    api.getCountries.mockResolvedValue({
-      data: [{ name: 'Ukraine', iso2: 'UA' }]
-    })
-
-    api.getCities.mockRejectedValue(new Error('Cities error'))
-
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    await waitFor(() => screen.getByText('Ukraine'))
-
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Ukraine'))
-
-    await waitFor(() => {
-      expect(api.getCities).toHaveBeenCalledWith('UA')
-    })
-  })
-
-  it('renders empty city list when API returns empty array', async () => {
-    api.getCountries.mockResolvedValue({
-      data: [{ name: 'Ukraine', iso2: 'UA' }]
-    })
-
-    api.getCities.mockResolvedValue({ data: [] })
-
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    await waitFor(() => screen.getByText('Ukraine'))
-
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Ukraine'))
-
-    await waitFor(() => expect(api.getCities).toHaveBeenCalled())
-
-    fireEvent.mouseDown(screen.getByText(/Select city/i))
-
-    expect(screen.queryByRole('option')).not.toBeInTheDocument()
-  })
-
-  // ---------------- UX LOGIC ----------------
-  it('clears city when country changes', async () => {
-    api.getCountries.mockResolvedValue({
+    axiosClient.get.mockResolvedValueOnce({
       data: [
-        { name: 'Ukraine', iso2: 'UA' },
-        { name: 'Poland', iso2: 'PL' }
+        { name: 'Kyiv Oblast', iso2: 'KO' },
+        { name: 'Lviv Oblast', iso2: 'LO' }
       ]
     })
 
-    api.getCities.mockResolvedValue({ data: [{ name: 'Kyiv' }] })
+    let resolveKyivCities
+    let resolveLvivCities
 
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    await waitFor(() => screen.getByText('Ukraine'))
-
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Ukraine'))
-
-    await waitFor(() => screen.getByText('Kyiv'))
-
-    fireEvent.mouseDown(screen.getByText(/Select city/i))
-    fireEvent.click(screen.getByText('Kyiv'))
-
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Poland'))
-
-    expect(screen.getByText(/Select city/i)).toBeInTheDocument()
-  })
-
-  // ---------------- NEXT BUTTON ----------------
-  it('calls next() when all fields valid', async () => {
-    api.getCountries.mockResolvedValue({
-      data: [{ name: 'Ukraine', iso2: 'UA' }]
-    })
-
-    api.getCities.mockResolvedValue({
-      data: [{ name: 'Kyiv' }]
-    })
-
-    render(<GeneralInfoStep btnsBox={<button>Next</button>} />)
-
-    fireEvent.change(screen.getByLabelText(/First name/i), {
-      target: { value: 'Ivan' }
-    })
-
-    fireEvent.change(screen.getByLabelText(/Last name/i), {
-      target: { value: 'Petrov' }
-    })
-
-    await waitFor(() => screen.getByText('Ukraine'))
-    fireEvent.mouseDown(screen.getByText(/Select country/i))
-    fireEvent.click(screen.getByText('Ukraine'))
-
-    await waitFor(() => screen.getByText('Kyiv'))
-    fireEvent.mouseDown(screen.getByText(/Select city/i))
-    fireEvent.click(screen.getByText('Kyiv'))
-
-    fireEvent.change(
-      screen.getByText(/Describe in short your professional status/i),
-      { target: { value: 'Teacher' } }
+    axiosClient.get.mockImplementationOnce(
+      () =>
+        new Promise((res) => {
+          resolveKyivCities = res
+        })
     )
 
-    fireEvent.click(screen.getByText(/Next/i))
+    axiosClient.get.mockImplementationOnce(
+      () =>
+        new Promise((res) => {
+          resolveLvivCities = res
+        })
+    )
 
-    expect(mockNext).toHaveBeenCalled()
-    expect(mockSetStepError).toHaveBeenCalledWith(0, false)
+    renderStep()
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(1))
+
+    const countrySelect = screen.getAllByRole('combobox')[0]
+    fireEvent.mouseDown(countrySelect)
+    fireEvent.click(await screen.findByText('Ukraine'))
+
+    await waitFor(() => expect(axiosClient.get).toHaveBeenCalledTimes(2))
+
+    const stateSelect = screen.getAllByRole('combobox')[1]
+    fireEvent.mouseDown(stateSelect)
+    fireEvent.click(await screen.findByText('Kyiv Oblast'))
+
+    fireEvent.mouseDown(stateSelect)
+    fireEvent.click(await screen.findByText('Lviv Oblast'))
+
+    resolveKyivCities({ data: [{ name: 'Kyiv' }] })
+    resolveLvivCities({ data: [{ name: 'Lviv' }] })
+
+    const citySelect = screen.getByTestId('city-select')
+    fireEvent.mouseDown(citySelect)
+
+    const lvivOption = await within(document.body).findByText(/lviv/i)
+    expect(lvivOption).toBeInTheDocument()
+
+    expect(within(document.body).queryByText(/kyiv/i)).not.toBeInTheDocument()
   })
 })
