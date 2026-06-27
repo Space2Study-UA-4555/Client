@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
+import AsyncAutocomplete from '~/components/async-autocomplete/AsyncAutocomplete'
 import { useStepContext } from '~/context/step-context'
 import { categoryService } from '~/services/category-service'
 import img from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
@@ -15,19 +15,30 @@ const CategoryStep = ({ btnsBox, stepLabel }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
 
-  const [category, setCategory] = useState(null)
+  const [categoryOption, setCategoryOption] = useState(null)
 
   useEffect(() => {
     const saved = stepData?.[stepLabel]
-    setCategory(saved?.category ?? null)
+    const savedId = saved?.category ?? null
+
+    if (!savedId) {
+      setCategoryOption(null)
+      return
+    }
+
+    categoryService.getCategoriesNames().then((res) => {
+      const found = res.find((item) => item._id === savedId)
+      if (found) setCategoryOption(found)
+    })
   }, [stepData, stepLabel])
 
   const handleCategoryChange = (_, value) => {
-    const categoryId = value?._id ?? null
-    setCategory(categoryId)
+    const id = value?._id ?? null
+
+    setCategoryOption(value ?? null)
 
     handleStepData(stepLabel, {
-      category: categoryId
+      category: id
     })
   }
 
@@ -56,7 +67,7 @@ const CategoryStep = ({ btnsBox, stepLabel }) => {
             textFieldProps={{
               label: t('becomeTutor.categories.mainSubjectsLabel')
             }}
-            value={category}
+            value={categoryOption}
             valueField='_id'
           />
         </Box>

@@ -14,10 +14,5 @@ export const styles = {
     fontWeight: 600,
     color: 'primary.900',
     marginBottom: '4px'
-  },
-
-  subtitle: {
-    fontSize: '14px',
-    color: 'primary.600'
   }
 }

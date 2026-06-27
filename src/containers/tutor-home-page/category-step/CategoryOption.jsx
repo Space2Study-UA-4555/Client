@@ -6,7 +6,6 @@ const CategoryOption = ({ option }) => {
   return (
     <Box sx={styles.root}>
       <Typography sx={styles.title}>{option.name}</Typography>
-      <Typography sx={styles.subtitle}>Category: {option.name}</Typography>
     </Box>
   )
 }
