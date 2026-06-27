@@ -21,15 +21,25 @@ const CategoryStep = ({ btnsBox, stepLabel }) => {
     const saved = stepData?.[stepLabel]
     const savedId = saved?.category ?? null
 
+    let active = true
+
     if (!savedId) {
       setCategoryOption(null)
-      return
+      return () => {
+        active = false
+      }
     }
 
     categoryService.getCategoriesNames().then((res) => {
+      if (!active) return
+
       const found = res.find((item) => item._id === savedId)
-      if (found) setCategoryOption(found)
+      setCategoryOption(found ?? null)
     })
+
+    return () => {
+      active = false
+    }
   }, [stepData, stepLabel])
 
   const handleCategoryChange = (_, value) => {
