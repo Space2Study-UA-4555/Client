@@ -5,13 +5,8 @@ import { AxiosResponse } from 'axios'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import AddIcon from '@mui/icons-material/Add'
-import CloseIcon from '@mui/icons-material/Close'
-import IconButton from '@mui/material/IconButton'
 
 import Loader from '~/components/loader/Loader'
-import AddResources from '~/containers/add-resources/AddResources'
-import IconExtensionWithTitle from '~/components/icon-extension-with-title/IconExtensionWithTitle'
-import { useModalContext } from '~/context/modal-context'
 import AppButton from '~/components/app-button/AppButton'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import FileEditor from '~/components/file-editor/FileEditor'
@@ -30,10 +25,6 @@ import {
   myResourcesPath,
   validations
 } from '~/pages/create-or-edit-lesson/CreateOrEditLesson.constants'
-import {
-  columns,
-  removeColumnRules
-} from '~/containers/add-resources/AddAttachments.constants'
 import { styles } from '~/pages/create-or-edit-lesson/CreateOrEditLesson.styles'
 import { authRoutes } from '~/router/constants/authRoutes'
 import {
@@ -45,8 +36,6 @@ import {
   LessonData,
   SizeEnum,
   TextFieldVariantEnum,
-  Attachment,
-  ResourcesTabsEnum,
   CategoryNameInterface
 } from '~/types'
 
@@ -54,7 +43,6 @@ const CreateOrEditLesson = () => {
   const { t } = useTranslation()
   const { setAlert } = useSnackBarContext()
 
-  const { openModal } = useModalContext()
   const navigate = useNavigate()
   const { id } = useParams()
 
@@ -77,34 +65,6 @@ const CreateOrEditLesson = () => {
         : t('lesson.successAddedLesson')
     })
     navigate(authRoutes.myResources.root.path)
-  }
-
-  const handleAddAttachments = (attachments: Attachment[]) => {
-    handleNonInputValueChange('attachments', attachments)
-  }
-
-  const handleOpenAddAttachmentsModal = () => {
-    openModal({
-      component: (
-        <AddResources<Attachment>
-          columns={columns}
-          onAddResources={handleAddAttachments}
-          removeColumnRules={removeColumnRules}
-          requestService={ResourceService.getAttachments}
-          resourceType={ResourcesTabsEnum.Attachments}
-          resources={data.attachments}
-        />
-      )
-    })
-  }
-
-  const handleRemoveAttachment = (attachmentToDelete: Attachment) => {
-    handleNonInputValueChange(
-      'attachments',
-      data.attachments.filter(
-        (attachment) => attachment._id !== attachmentToDelete._id
-      )
-    )
   }
 
   const handleEdit = (content: string) => {
@@ -159,15 +119,16 @@ const CreateOrEditLesson = () => {
     return ResourceService.getLesson(id)
   }
 
-  const handleResponseLesson = (lesson: LessonData) => {
-    for (const key in data) {
-      const validKey = key as keyof LessonData
-      handleNonInputValueChange(validKey, lesson[validKey])
-    }
+  const handleResponseLesson = (lesson: Lesson) => {
+    handleNonInputValueChange('title', lesson.title)
+    handleNonInputValueChange('description', lesson.description)
+    handleNonInputValueChange('content', lesson.content)
+    handleNonInputValueChange('attachments', lesson.attachments)
+    handleNonInputValueChange('category', lesson.category?._id ?? null)
   }
 
   const { loading: getLessonLoading, fetchData: fetchDataLesson } = useAxios<
-    LessonData,
+    Lesson,
     string
   >({
     service: getLesson,
@@ -187,18 +148,6 @@ const CreateOrEditLesson = () => {
   if (getLessonLoading) {
     return <Loader pageLoad />
   }
-
-  const attachmentsList = data.attachments.map((attachment) => (
-    <Box key={attachment.size} sx={styles.attachmentList.container}>
-      <IconExtensionWithTitle
-        size={attachment.size}
-        title={attachment.fileName}
-      />
-      <IconButton onClick={() => handleRemoveAttachment(attachment)}>
-        <CloseIcon />
-      </IconButton>
-    </Box>
-  ))
 
   return (
     <PageWrapper>
@@ -236,14 +185,10 @@ const CreateOrEditLesson = () => {
           onCategoryChange={onCategoryChange}
         />
         <Divider sx={styles.divider} />
-        <AppButton
-          onClick={handleOpenAddAttachmentsModal}
-          sx={styles.addAttachments}
-        >
+        <AppButton sx={styles.addAttachments} type={'button'}>
           {t('lesson.labels.attachments')} <AddIcon sx={styles.addIcon} />
         </AppButton>
         <FileEditor onEdit={handleEdit} value={data.content} />
-        {attachmentsList}
         <Box sx={styles.buttons}>
           <AppButton size={SizeEnum.ExtraLarge} type={ButtonTypeEnum.Submit}>
             {t('common.save')}

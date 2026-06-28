@@ -6,6 +6,16 @@
     "attachments": "Attachments",
     "categories": "Categories"
   },
+  "lessons": {
+    "addBtn": "New lesson",
+    "title": "Title",
+    "filesLabel": "Files",
+    "filesCount": "{{number}} Files",
+    "lastUpdates": "Last updates",
+    "emptyItems": "You have no lessons yet",
+    "confirmDeletionTitle": "Do you confirm lesson deletion?",
+    "successDeletion": "Lesson was deleted successfully"
+  },
   "questions": {
     "addBtn": "New question",
     "add": "Add Questions",

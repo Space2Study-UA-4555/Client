@@ -34,6 +34,12 @@ export const URLs = {
       post: '/questions',
       patch: '/questions'
     },
+    lessons: {
+      get: '/lessons',
+      delete: '/lessons',
+      post: '/lessons',
+      patch: '/lessons'
+    },
     resourcesCategories: {
       get: '/resources-categories',
       getNames: '/resources-categories/names',

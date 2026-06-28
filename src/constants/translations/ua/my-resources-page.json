@@ -6,6 +6,16 @@
     "attachments": "Вкладення",
     "categories": "Категорії"
   },
+  "lessons": {
+    "addBtn": "Новий урок",
+    "title": "Заголовок",
+    "filesLabel": "Файли",
+    "filesCount": "{{number}} Файлів",
+    "lastUpdates": "Останнє оновлення",
+    "emptyItems": "У вас ще немає уроків",
+    "confirmDeletionTitle": "Ви підтверджуєте видалення уроку?",
+    "successDeletion": "Урок було успішно видалено"
+  },
   "questions": {
     "addBtn": "Нове запитання",
     "add": "Додати Питання",
