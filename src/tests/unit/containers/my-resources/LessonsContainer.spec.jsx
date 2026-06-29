@@ -129,11 +129,9 @@ describe('LessonsContainer category test', () => {
   })
 
   it('should render correct category', async () => {
-    const category = await screen.findByText(
-      'myResourcesPage.categories.category'
-    )
+    const categories = await screen.findAllByText('New Category')
 
-    expect(category).toBeInTheDocument()
+    expect(categories).toHaveLength(responseItemsMockCategory.length)
   })
 })
 

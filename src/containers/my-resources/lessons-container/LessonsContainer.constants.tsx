@@ -1,6 +1,7 @@
+import { Link as RouterLink } from 'react-router-dom'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+import Link from '@mui/material/Link'
 
 import IconExtensionWithTitle from '~/components/icon-extension-with-title/IconExtensionWithTitle'
 import AppChip from '~/components/app-chip/AppChip'
@@ -20,19 +21,15 @@ export const columns: TableColumn<Lesson>[] = [
   {
     label: 'myResourcesPage.lessons.title',
     field: 'title',
-    calculatedCellValue: (
-      item: Lesson,
-      { navigate }: AdditionalPropsInterface
-    ) => {
-      const handleClick = () => {
-        navigate(createUrlPath(authRoutes.myResources.lesson.path, item._id))
-      }
-      return (
-        <Box onClick={handleClick} sx={styles.titleContainer}>
-          <IconExtensionWithTitle icon={<ListAltIcon />} title={item.title} />
-        </Box>
-      )
-    }
+    calculatedCellValue: (item: Lesson) => (
+      <Link
+        component={RouterLink}
+        sx={styles.titleContainer}
+        to={createUrlPath(authRoutes.myResources.lesson.path, item._id)}
+      >
+        <IconExtensionWithTitle icon={<ListAltIcon />} title={item.title} />
+      </Link>
+    )
   },
   {
     label: 'myResourcesPage.lessons.filesLabel',
@@ -40,7 +37,7 @@ export const columns: TableColumn<Lesson>[] = [
     calculatedCellValue: (item: Lesson, { t }: AdditionalPropsInterface) => (
       <Typography sx={styles.files}>
         {t('myResourcesPage.lessons.filesCount', {
-          number: item.attachments?.length ?? 0
+          count: item.attachments?.length ?? 0
         })}
       </Typography>
     )

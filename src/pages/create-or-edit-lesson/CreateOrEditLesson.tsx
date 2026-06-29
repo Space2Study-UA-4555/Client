@@ -84,7 +84,7 @@ const CreateOrEditLesson = () => {
   })
 
   const editLesson = (): Promise<AxiosResponse> => {
-    return ResourceService.editLesson(data, id)
+    return ResourceService.editLesson(data, id as string)
   }
 
   const { fetchData: fetchEditedLesson } = useAxios<null, LessonData>({
@@ -116,7 +116,7 @@ const CreateOrEditLesson = () => {
   })
 
   const getLesson = (id?: string): Promise<AxiosResponse> => {
-    return ResourceService.getLesson(id)
+    return ResourceService.getLesson(id as string)
   }
 
   const handleResponseLesson = (lesson: Lesson) => {
@@ -185,7 +185,7 @@ const CreateOrEditLesson = () => {
           onCategoryChange={onCategoryChange}
         />
         <Divider sx={styles.divider} />
-        <AppButton sx={styles.addAttachments} type={'button'}>
+        <AppButton disabled sx={styles.addAttachments} type={'button'}>
           {t('lesson.labels.attachments')} <AddIcon sx={styles.addIcon} />
         </AppButton>
         <FileEditor onEdit={handleEdit} value={data.content} />

@@ -47,11 +47,11 @@ export const ResourceService = {
   ): Promise<AxiosResponse<ItemsWithCount<Lesson>>> => {
     return axiosClient.get(URLs.resources.lessons.get, { params })
   },
-  getLesson: async (id?: string): Promise<AxiosResponse<Lesson>> =>
+  getLesson: async (id: string): Promise<AxiosResponse<Lesson>> =>
     await axiosClient.get(createUrlPath(URLs.resources.lessons.get, id)),
-  addLesson: async (data?: LessonData): Promise<AxiosResponse<Lesson>> =>
+  addLesson: async (data: LessonData): Promise<AxiosResponse<Lesson>> =>
     await axiosClient.post(URLs.resources.lessons.post, data),
-  editLesson: async (data?: LessonData, id?: string): Promise<AxiosResponse> =>
+  editLesson: async (data: LessonData, id: string): Promise<AxiosResponse> =>
     await axiosClient.patch(
       createUrlPath(URLs.resources.lessons.patch, id),
       data

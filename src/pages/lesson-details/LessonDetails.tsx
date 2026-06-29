@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
+import DOMPurify from 'dompurify'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Accordion from '@mui/material/Accordion'
@@ -49,7 +50,10 @@ const LessonDetails = () => {
     [setAlert]
   )
 
-  const getLesson = useCallback(() => ResourceService.getLesson(id), [id])
+  const getLesson = useCallback(
+    () => ResourceService.getLesson(id as string),
+    [id]
+  )
 
   const { response: lesson, loading } = useAxios<Lesson, string>({
     service: getLesson,
@@ -84,7 +88,9 @@ const LessonDetails = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Box
-              dangerouslySetInnerHTML={{ __html: lesson.content }}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(lesson.content)
+              }}
               sx={styles.content}
             />
           </AccordionDetails>

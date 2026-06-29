@@ -8,7 +8,9 @@ const captionTitle = {
 
 export const styles = {
   titleContainer: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    color: 'inherit',
+    textDecoration: 'none'
   },
   categoryChip: {
     backgroundColor: 'inherit',

@@ -10,10 +10,11 @@
     "addBtn": "New lesson",
     "title": "Title",
     "filesLabel": "Files",
-    "filesCount": "{{number}} Files",
-    "lastUpdates": "Last updates",
+    "filesCount_one": "{{count}} File",
+    "filesCount_other": "{{count}} Files",
+    "lastUpdates": "Last updated",
     "emptyItems": "You have no lessons yet",
-    "confirmDeletionTitle": "Do you confirm lesson deletion?",
+    "confirmDeletionTitle": "Are you sure you want to delete this lesson?",
     "successDeletion": "Lesson was deleted successfully"
   },
   "questions": {

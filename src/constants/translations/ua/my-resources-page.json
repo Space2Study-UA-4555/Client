@@ -10,10 +10,12 @@
     "addBtn": "Новий урок",
     "title": "Заголовок",
     "filesLabel": "Файли",
-    "filesCount": "{{number}} Файлів",
+    "filesCount_one": "{{count}} Файл",
+    "filesCount_few": "{{count}} Файли",
+    "filesCount_many": "{{count}} Файлів",
     "lastUpdates": "Останнє оновлення",
     "emptyItems": "У вас ще немає уроків",
-    "confirmDeletionTitle": "Ви підтверджуєте видалення уроку?",
+    "confirmDeletionTitle": "Ви впевнені, що хочете видалити урок?",
     "successDeletion": "Урок було успішно видалено"
   },
   "questions": {

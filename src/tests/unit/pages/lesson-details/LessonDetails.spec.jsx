@@ -68,3 +68,44 @@ describe('LessonDetails test', () => {
     )
   })
 })
+
+describe('LessonDetails content sanitization test', () => {
+  let container
+
+  const maliciousMock = {
+    ...lessonMock,
+    content:
+      '<p>Safe text</p><img src="x" onerror="alert(1)"><script>alert(2)</script>'
+  }
+
+  beforeEach(async () => {
+    mockAxiosClient
+      .onGet(createUrlPath(URLs.resources.lessons.get, lessonId))
+      .reply(200, maliciousMock)
+
+    await waitFor(() => {
+      const rendered = renderWithProviders(
+        <Routes>
+          <Route
+            element={<LessonDetails />}
+            path={'/my-resources/lesson/:id'}
+          />
+        </Routes>,
+        { initialEntries: `/my-resources/lesson/${lessonId}` }
+      )
+      container = rendered.container
+    })
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+    mockAxiosClient.reset()
+  })
+
+  it('should strip dangerous markup before rendering content', async () => {
+    await screen.findByText('Safe text')
+
+    expect(container.querySelector('script')).not.toBeInTheDocument()
+    expect(container.querySelector('img[onerror]')).not.toBeInTheDocument()
+  })
+})

@@ -21,7 +21,9 @@ const FileEditor: FC<FileEditorProps> = ({ onEdit, value }) => {
           'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
       }}
       onEditorChange={onEdit}
-      tinymceScriptSrc={'https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js'}
+      tinymceScriptSrc={
+        'https://cdn.jsdelivr.net/npm/tinymce@6.8.6/tinymce.min.js'
+      }
       value={value}
     />
   )
