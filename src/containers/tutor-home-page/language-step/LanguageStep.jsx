@@ -36,6 +36,7 @@ const LanguageStep = ({ btnsBox, stepLabel }) => {
         <Box sx={styles.imgMobile}>{img}</Box>
 
         <AsyncAutocomplete
+          ListboxProps={{ style: { maxHeight: 250 } }}
           fetchOnFocus
           labelField='name'
           onChange={handleLanguageChange}
