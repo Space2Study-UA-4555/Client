@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import PropTypes from 'prop-types'
 
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import { useStepContext } from '~/context/step-context'
@@ -86,6 +87,11 @@ const CategoryStep = ({ btnsBox, stepLabel }) => {
       </Box>
     </Box>
   )
+}
+
+CategoryStep.propTypes = {
+  btnsBox: PropTypes.node,
+  stepLabel: PropTypes.string.isRequired
 }
 
 export default CategoryStep
