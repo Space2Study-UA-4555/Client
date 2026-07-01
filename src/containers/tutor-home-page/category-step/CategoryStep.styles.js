@@ -3,10 +3,10 @@ import { fadeAnimation } from '~/styles/app-theme/custom-animations'
 export const styles = {
   container: {
     display: 'flex',
+    flexDirection: { xs: 'column', sm: 'row' },
     justifyContent: 'space-between',
-    gap: '40px',
+    gap: { xs: '40px', md: '120px' },
     height: { sm: '485px' },
-    paddingBottom: { xs: '30px', sm: '0px' },
     ...fadeAnimation
   },
 
@@ -14,7 +14,7 @@ export const styles = {
     display: 'flex',
     flex: 1,
     maxWidth: '432px',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     pb: { xs: '16px', sm: '52px' }
   },
 
@@ -25,23 +25,26 @@ export const styles = {
 
   rightBox: {
     maxWidth: '432px',
+    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     m: { xs: '0 auto', md: 0 },
-    pt: 0
+    pt: { sm: '20px' }
   },
 
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '24px',
-    maxWidth: '420px'
+    gap: '16px'
   },
 
   title: {
-    fontSize: '24px',
-    fontWeight: 600,
-    mb: '8px'
+    fontSize: '16px',
+    fontWeight: 400,
+    lineHeight: '100%',
+    letterSpacing: '0.15px',
+    color: '#263238',
+    marginBottom: '16px'
   }
 }

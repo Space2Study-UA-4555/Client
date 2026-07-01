@@ -18,6 +18,8 @@ import { guestRouter } from '~/router/routes/guestRouter'
 import { authRouter } from '~/router/routes/authRouter'
 import { home } from '~/router/constants/crumbs'
 
+import UserStepsWrapper from '~/components/user-steps-wrapper/UserStepsWrapper'
+
 const HomeRoute = lazy(() => import('~/router/helpers/HomeRoute'))
 const Logout = lazy(() => import('~/pages/logout/Logout'))
 
@@ -33,6 +35,10 @@ export const routerConfig = (
       {authRouter}
       {tutorRouter}
       {studentRouter}
+      <Route
+        element={<UserStepsWrapper userRole='tutor' />}
+        path='/tutor/signup'
+      />
       <Route path={guestRoutes.error.route}>{errorRouter}</Route>
       <Route element={<Logout />} path={authRoutes.accountMenu.logout.route} />
     </Route>

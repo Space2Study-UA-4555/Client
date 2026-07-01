@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import AsyncAutocomplete from '~/components/async-autocomplete/AsyncAutocomplete'
+import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import { useStepContext } from '~/context/step-context'
 import { categoryService } from '~/services/category-service'
 import img from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
