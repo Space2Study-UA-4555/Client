@@ -30,6 +30,9 @@ const mockOffer = {
 }
 
 categoryService.getCategoriesNames.mockResolvedValue({ data: [] })
+categoryService.getCategories.mockResolvedValue({
+  data: { items: [], count: 0 }
+})
 subjectService.getSubjectsNames.mockResolvedValue({ data: [] })
 offerService.getOffers.mockResolvedValue({
   data: { items: [mockOffer], count: 1 }

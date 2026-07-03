@@ -17,6 +17,7 @@ import OfferRequestBlock from '~/containers/find-offer/offer-request-block/Offer
 import OfferSearchToolbar from '~/containers/find-offer/offer-search-toolbar/OfferSearchToolbar'
 import OfferSortMenu from '~/containers/find-offer/offer-sort-menu/OfferSortMenu'
 import OffersToggle from '~/containers/find-offer/offers-toggle/OffersToggle'
+import PopularCategories from '~/containers/find-offer/popular-categories/PopularCategories'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import useLoadMore from '~/hooks/use-load-more'
 import { useAppSelector } from '~/hooks/use-redux'
@@ -160,6 +161,7 @@ const FindOffers = () => {
         </Box>
       </Box>
       {offersList}
+      <PopularCategories />
     </PageWrapper>
   )
 }
