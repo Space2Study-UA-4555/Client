@@ -22,5 +22,10 @@ export const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     my: '30px'
+  },
+  listToolbarRight: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px'
   }
 }

@@ -11,12 +11,13 @@ import DirectionLink from '~/components/direction-link/DirectionLink'
 import AppViewSwitcher from '~/components/app-view-switcher/AppViewSwitcher'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import OfferSearchToolbar from '~/containers/find-offer/offer-search-toolbar/OfferSearchToolbar'
+import OfferSortMenu from '~/containers/find-offer/offer-sort-menu/OfferSortMenu'
 import OffersToggle from '~/containers/find-offer/offers-toggle/OffersToggle'
 import { useAppSelector } from '~/hooks/use-redux'
 import { authRoutes } from '~/router/constants/authRoutes'
 
 import { styles } from '~/pages/find-offers/FindOffers.styles'
-import { SizeEnum, UserRoleEnum, ViewModeEnum } from '~/types'
+import { SizeEnum, SortByEnum, UserRoleEnum, ViewModeEnum } from '~/types'
 
 const FindOffers = () => {
   const { t } = useTranslation()
@@ -27,6 +28,7 @@ const FindOffers = () => {
     userRole !== UserRoleEnum.Tutor
   )
   const [viewMode, setViewMode] = useState<ViewModeEnum>(ViewModeEnum.Inline)
+  const [sort, setSort] = useState<SortByEnum>(SortByEnum.Newest)
 
   return (
     <PageWrapper>
@@ -52,7 +54,10 @@ const FindOffers = () => {
           isTutorsOffers={isTutorsOffers}
           setIsTutorsOffers={setIsTutorsOffers}
         />
-        <AppViewSwitcher activeView={viewMode} onChange={setViewMode} />
+        <Box sx={styles.listToolbarRight}>
+          <OfferSortMenu setSort={setSort} sort={sort} />
+          <AppViewSwitcher activeView={viewMode} onChange={setViewMode} />
+        </Box>
       </Box>
     </PageWrapper>
   )
