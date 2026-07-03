@@ -78,4 +78,24 @@ describe('FindOffers page', () => {
 
     expect(checkbox).toBeChecked()
   })
+
+  it('renders the view switcher with inline mode active by default', () => {
+    renderPage('student')
+
+    expect(screen.getByTestId('inline-view-button')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+  })
+
+  it('activates grid mode on grid button click', () => {
+    renderPage('student')
+
+    fireEvent.click(screen.getByTestId('grid-view-button'))
+
+    expect(screen.getByTestId('grid-view-button')).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+  })
 })

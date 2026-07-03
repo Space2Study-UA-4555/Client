@@ -16,5 +16,11 @@ export const styles = {
     display: 'flex',
     justifyContent: 'flex-start',
     mb: '20px'
+  },
+  listToolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    my: '30px'
   }
 }

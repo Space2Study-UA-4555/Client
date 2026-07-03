@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import DirectionLink from '~/components/direction-link/DirectionLink'
+import AppViewSwitcher from '~/components/app-view-switcher/AppViewSwitcher'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import OfferSearchToolbar from '~/containers/find-offer/offer-search-toolbar/OfferSearchToolbar'
 import OffersToggle from '~/containers/find-offer/offers-toggle/OffersToggle'
@@ -15,7 +16,7 @@ import { useAppSelector } from '~/hooks/use-redux'
 import { authRoutes } from '~/router/constants/authRoutes'
 
 import { styles } from '~/pages/find-offers/FindOffers.styles'
-import { SizeEnum, UserRoleEnum } from '~/types'
+import { SizeEnum, UserRoleEnum, ViewModeEnum } from '~/types'
 
 const FindOffers = () => {
   const { t } = useTranslation()
@@ -25,6 +26,7 @@ const FindOffers = () => {
   const [isTutorsOffers, setIsTutorsOffers] = useState(
     userRole !== UserRoleEnum.Tutor
   )
+  const [viewMode, setViewMode] = useState<ViewModeEnum>(ViewModeEnum.Inline)
 
   return (
     <PageWrapper>
@@ -45,10 +47,13 @@ const FindOffers = () => {
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-      <OffersToggle
-        isTutorsOffers={isTutorsOffers}
-        setIsTutorsOffers={setIsTutorsOffers}
-      />
+      <Box sx={styles.listToolbar}>
+        <OffersToggle
+          isTutorsOffers={isTutorsOffers}
+          setIsTutorsOffers={setIsTutorsOffers}
+        />
+        <AppViewSwitcher activeView={viewMode} onChange={setViewMode} />
+      </Box>
     </PageWrapper>
   )
 }

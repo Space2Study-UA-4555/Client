@@ -112,3 +112,8 @@ export enum ApiMethodEnum {
   POST = 'POST',
   PATCH = 'PATCH'
 }
+
+export enum ViewModeEnum {
+  Grid = 'grid',
+  Inline = 'inline'
+}
