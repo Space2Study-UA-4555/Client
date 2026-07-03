@@ -27,5 +27,14 @@ export const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '20px'
+  },
+  loaderContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    py: '80px'
+  },
+  viewMoreBtn: {
+    display: 'flex',
+    m: '32px auto 0'
   }
 }

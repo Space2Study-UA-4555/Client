@@ -8,7 +8,8 @@ import {
   Faq,
   UserRoleEnum,
   CategoryInterface,
-  StatusEnum
+  StatusEnum,
+  SortByEnum
 } from '~/types'
 
 export interface Offer extends CommonEntityFields {
@@ -55,4 +56,14 @@ export interface PriceRangeResponse {
 export interface GetOffersResponse {
   items: Offer[]
   count: number
+}
+
+export interface GetOffersParams {
+  authorRole: UserRoleEnum
+  categoryId?: string
+  subjectId?: string
+  search?: string
+  sort?: SortByEnum
+  skip?: number
+  limit?: number
 }

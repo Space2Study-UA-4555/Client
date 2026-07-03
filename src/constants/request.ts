@@ -32,6 +32,9 @@ export const URLs = {
     states: '/locations/states',
     cities: '/locations/cities'
   },
+  offers: {
+    get: '/offers'
+  },
   resources: {
     questions: {
       get: '/questions',
