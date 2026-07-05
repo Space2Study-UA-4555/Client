@@ -1,0 +1,14 @@
+{
+  "labels": {
+    "title": "Title",
+    "description": "Description",
+    "attachments": "Attachments"
+  },
+  "content": "Content",
+  "errorMessages": {
+    "title": "Title is required",
+    "description": "Description is required"
+  },
+  "successAddedLesson": "Lesson was successfully added",
+  "successEditedLesson": "Lesson was successfully edited"
+}

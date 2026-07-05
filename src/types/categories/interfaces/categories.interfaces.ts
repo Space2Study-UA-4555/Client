@@ -1,6 +1,7 @@
 import { TableColumn } from '~/types/components/components.index'
 import { Categories } from '~/types/my-resources/myResources.index'
 import { Question } from '~/types/questions/questions.index'
+import { Lesson } from '~/types/lessons/lessons.index'
 import { RequestParams } from '~/types/services/types/services.types'
 
 export interface CategoriesParams extends RequestParams {
@@ -20,7 +21,7 @@ export interface ScreenBasedLimits {
   default: number
 }
 
-export interface RemoveColumnRules<T extends Question | Categories> {
+export interface RemoveColumnRules<T extends Question | Categories | Lesson> {
   desktop?: TableColumn<T>['label'][]
   tablet?: TableColumn<T>['label'][]
   mobile?: TableColumn<T>['label'][]
