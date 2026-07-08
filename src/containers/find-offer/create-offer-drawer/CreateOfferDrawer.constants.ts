@@ -37,11 +37,9 @@ export const languages = Object.values(LanguagesEnum).map((language) => ({
   title: language,
   value: language
 }))
+export const courses = [{ title: 'Select a course', value: '' }]
 
-export const courses = [{ title: 'Select a course1', value: '' }]
-
-export const createOfferValidation = {
-  title: (value: string) => emptyField(value, 'offerPage.errorMessages.title'),
+export const studentValidation = {
   category: (value: string | null) =>
     emptyField(value, 'offerPage.errorMessages.category'),
   subject: (value: string | null) =>
@@ -55,7 +53,12 @@ export const createOfferValidation = {
   languages: (value: string | LanguagesEnum[]) =>
     Array.isArray(value) && value.length
       ? undefined
-      : 'offerPage.errorMessages.languages',
+      : 'offerPage.errorMessages.languages'
+}
+
+export const tutorValidation = {
+  ...studentValidation,
+  title: (value: string) => emptyField(value, 'offerPage.errorMessages.title'),
   price: (value: string | number) => {
     if (value === '') {
       return 'offerPage.errorMessages.price'

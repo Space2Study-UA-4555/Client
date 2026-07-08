@@ -34,7 +34,8 @@ import {
 } from '~/types'
 import {
   CreateOfferDrawerForm,
-  createOfferValidation,
+  studentValidation,
+  tutorValidation,
   initialValues,
   languages,
   proficiencyLevels,
@@ -51,6 +52,7 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
   const { userRole } = useAppSelector((state) => state.appMain)
   const { t } = useTranslation()
   const { setNeedConfirmation } = useConfirm()
+  const isTutor = userRole === UserRoleEnum.Tutor
   const {
     data,
     handleInputChange,
@@ -61,7 +63,7 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
     handleSubmit
   } = useForm<CreateOfferDrawerForm>({
     initialValues,
-    validations: createOfferValidation,
+    validations: isTutor ? tutorValidation : studentValidation,
     onSubmit: () => {
       console.log(buildOfferPayload(data))
       onCreated?.()
@@ -71,8 +73,6 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
   useEffect(() => {
     setNeedConfirmation(isDirty)
   }, [isDirty, setNeedConfirmation])
-
-  const isTutor = userRole === UserRoleEnum.Tutor
 
   const descriptionMaxLength = isTutor ? 1000 : 2000
 
@@ -158,8 +158,27 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
   }
 
   const buildOfferPayload = (data: CreateOfferDrawerForm) => {
-    const payload = data
-    return payload
+    if (isTutor) {
+      return {
+        category: data.category,
+        subject: data.subject,
+        proficiencyLevel: data.proficiencyLevel,
+        title: data.title,
+        description: data.description,
+        languages: data.languages,
+        price: Number(data.price),
+        course: data.course,
+        FAQ: data.FAQ
+      }
+    }
+    return {
+      category: data.category,
+      subject: data.subject,
+      proficiencyLevel: data.proficiencyLevel,
+      description: data.description,
+      languages: data.languages,
+      priceRange: data.priceRange
+    }
   }
 
   return (
@@ -289,7 +308,9 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
           {data.languages.length > 0 && (
             <AppChipList
               defaultQuantity={data.languages.length}
-              handleChipDelete={onLanguageDelete}
+              handleChipDelete={(item: string) =>
+                onLanguageDelete(item as LanguagesEnum)
+              }
               items={data.languages}
               wrapperStyle={styles.chipList}
             />
@@ -312,7 +333,7 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
                 )
               }}
               errorMsg={errors.price ? t(errors.price) : ''}
-              inputProps={{ inputMode: 'numeric' }}
+              inputProps={{ inputMode: 'numeric', readOnly: true }}
               onBlur={handleBlur('price')}
               onChange={handlePriceChange}
               sx={styles.priceInput}
@@ -346,7 +367,7 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
                       </InputAdornment>
                     )
                   }}
-                  inputProps={{ inputMode: 'numeric' }}
+                  inputProps={{ inputMode: 'numeric', readOnly: true }}
                   placeholder='Min'
                   sx={styles.rangeInput}
                   value={data.priceRange[0]}

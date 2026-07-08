@@ -125,6 +125,8 @@ describe('Categories page', () => {
 
     const searchInput = screen.getByLabelText('categoriesPage.searchLabel')
 
+    expect(await screen.findByText('Frontend')).toBeInTheDocument()
+
     await userEvent.type(searchInput, 'Front')
     fireEvent.keyDown(searchInput, { key: 'Enter', code: 'Enter' })
 
