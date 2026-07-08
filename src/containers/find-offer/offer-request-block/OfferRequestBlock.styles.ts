@@ -21,8 +21,5 @@ export const styles = {
     p: '24px 36px',
     boxSizing: 'border-box',
     boxShadow: 'none'
-  },
-  drawerContent: {
-    pt: '32px'
   }
 }

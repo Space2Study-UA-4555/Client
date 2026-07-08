@@ -5,6 +5,7 @@ import icon from '~/assets/img/find-offer/subject_icon.png'
 import TitleBlock from '~/components/title-block/TitleBlock'
 import AppButton from '~/components/app-button/AppButton'
 import AppDrawer from '~/components/app-drawer/AppDrawer'
+import CreateOfferDrawer from '~/containers/find-offer/create-offer-drawer/CreateOfferDrawer'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { useDrawer } from '~/hooks/use-drawer'
 import { useAppSelector } from '~/hooks/use-redux'
@@ -46,7 +47,9 @@ const OfferRequestBlock = () => {
         onClose={closeDrawer}
         open={isOpen}
       >
-        <Box sx={styles.drawerContent}>CreateOfferDrawer</Box>
+        <Box>
+          <CreateOfferDrawer onClose={closeDrawer} onCreated={closeDrawer} />
+        </Box>
       </AppDrawer>
     </>
   )
