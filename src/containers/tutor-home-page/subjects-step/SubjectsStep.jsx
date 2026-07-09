@@ -70,7 +70,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
           </Typography>
 
           <AsyncAutocomplete
-            fetchOnFocus
+            fetchOnFocus={false}
             labelField='name'
             onChange={handleCategoryChange}
             service={categoryService.getCategoriesNames}
@@ -84,7 +84,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
           <AsyncAutocomplete
             disabled={!category}
             fetchCondition={Boolean(category)}
-            fetchOnFocus
+            fetchOnFocus={false}
             labelField='name'
             onChange={handleSubjectChange}
             service={getSubjectsNames}
