@@ -12,6 +12,7 @@ import { categoryService } from '~/services/category-service'
 import { subjectService } from '~/services/subject-service'
 import { ButtonVariantEnum } from '~/types'
 import img from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
+
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
 
 const isChip = (item) => Boolean(item.name)
@@ -19,6 +20,7 @@ const isChip = (item) => Boolean(item.name)
 const SubjectsStep = ({ btnsBox, stepLabel }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
+
   const [category, setCategory] = useState(null)
   const [subject, setSubject] = useState(null)
   const [subjectName, setSubjectName] = useState('')
@@ -26,7 +28,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
   const getSaved = useCallback(() => {
     const data = stepLabel ? stepData?.[stepLabel] : null
     return Array.isArray(data) ? data : []
-  }, [stepData?.[stepLabel], stepLabel])
+  }, [stepData, stepLabel])
 
   const getChips = (saved) => saved.filter(isChip)
 
