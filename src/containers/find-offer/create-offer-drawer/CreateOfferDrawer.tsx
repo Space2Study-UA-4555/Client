@@ -65,7 +65,7 @@ const CreateOfferDrawer: FC<CreateOfferDrawerProps> = ({ onCreated }) => {
     initialValues,
     validations: isTutor ? tutorValidation : studentValidation,
     onSubmit: () => {
-      console.log(buildOfferPayload(data))
+      buildOfferPayload(data)
       onCreated?.()
     }
   })
