@@ -48,6 +48,20 @@ export interface SubjectNameInterface {
   name: string
 }
 
+export interface CountryNameInterface {
+  name: string
+  iso2: string
+}
+
+export interface StateNameInterface {
+  name: string
+  iso2: string
+}
+
+export interface CityNameInterface {
+  name: string
+}
+
 export interface ReviewInterface {
   offer: Offer
   author: UserResponse
