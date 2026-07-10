@@ -3,9 +3,8 @@ import { fadeAnimation } from '~/styles/app-theme/custom-animations'
 export const styles = {
   container: {
     display: 'flex',
-    flexDirection: { xs: 'column', sm: 'row' },
     justifyContent: 'space-between',
-    gap: { xs: '40px', md: '120px' },
+    gap: '40px',
     height: { sm: '485px' },
     ...fadeAnimation
   },
@@ -14,18 +13,15 @@ export const styles = {
     display: 'flex',
     flex: 1,
     maxWidth: '432px',
-    alignItems: 'flex-start',
-    pb: { xs: '16px', sm: '52px' }
+    pb: { sm: '52px' }
   },
 
   img: {
-    width: '100%',
-    m: { sm: 0, xs: '0 auto' }
+    width: '100%'
   },
 
   rightBox: {
     maxWidth: '432px',
-    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -40,11 +36,7 @@ export const styles = {
   },
 
   title: {
-    fontSize: '16px',
-    fontWeight: 400,
-    lineHeight: '100%',
-    letterSpacing: '0.15px',
-    color: '#263238',
-    marginBottom: '16px'
+    typography: 'body1',
+    color: 'primary.700'
   }
 }
