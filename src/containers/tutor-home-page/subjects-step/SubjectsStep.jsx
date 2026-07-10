@@ -147,11 +147,15 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
         <Box alt='' component='img' src={img} sx={styles.img} />
       </Box>
 
-      <Box sx={styles.rigthBox}>
+      <Box sx={styles.rightBox}>
         <Box sx={styles.form}>
           <Typography sx={styles.title}>
             {t('becomeTutor.categories.title')}
           </Typography>
+
+          <Box sx={styles.mobileImgContainer}>
+            <Box alt='' component='img' src={img} sx={styles.mobileImg} />
+          </Box>
 
           <AsyncAutocomplete
             fetchOnFocus={false}
@@ -197,7 +201,7 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
           )}
         </Box>
 
-        {btnsBox}
+        <Box sx={styles.btnsBox}>{btnsBox}</Box>
       </Box>
     </Box>
   )
