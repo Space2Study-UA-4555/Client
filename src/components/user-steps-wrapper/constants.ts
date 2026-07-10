@@ -4,6 +4,9 @@ export const initialValues = {
   firstName: '',
   lastName: '',
   country: null,
+  countryCode: null,
+  state: null,
+  stateCode: null,
   city: null,
   professionalSummary: ''
 }
@@ -15,3 +18,10 @@ export const validations = {
 }
 
 export const tutorStepLabels = ['generalInfo', 'subjects', 'language', 'photo']
+
+export const studentStepLabels = [
+  'generalInfo',
+  'interests',
+  'language',
+  'photo'
+]

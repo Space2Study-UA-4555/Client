@@ -27,6 +27,11 @@ export const URLs = {
     get: '/subjects',
     getNames: '/subjects/names'
   },
+  locations: {
+    countries: '/locations/countries',
+    states: '/locations/states',
+    cities: '/locations/cities'
+  },
   resources: {
     questions: {
       get: '/questions',
