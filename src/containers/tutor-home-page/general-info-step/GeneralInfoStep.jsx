@@ -7,17 +7,22 @@ import Typography from '@mui/material/Typography'
 import AppTextArea from '~/components/app-text-area/AppTextArea'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
+
 import { useStepContext } from '~/context/step-context'
 import useAxios from '~/hooks/use-axios'
 import { useForm } from '~/hooks/use-form'
 import { useAppSelector } from '~/hooks/use-redux'
+
 import { locationService } from '~/services/location-service'
 import { userService } from '~/services/user-service'
+
 import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
+
 import {
   initialValues,
   validations
 } from '~/components/user-steps-wrapper/constants'
+
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 
 const resolveLocationCodes = async (countryName, cityName) => {
@@ -66,9 +71,11 @@ const GeneralInfoStep = ({
   const { t } = useTranslation()
   const { userId, userRole } = useAppSelector((state) => state.appMain)
   const { handleStepData, stepData } = useStepContext()
+
   const isFetchStarted = useRef(false)
 
   const savedGeneralInfo = stepLabel ? stepData?.[stepLabel] : null
+
   const {
     data,
     errors,
@@ -87,6 +94,7 @@ const GeneralInfoStep = ({
       void (async () => {
         const countryName = user.address?.country ?? null
         const cityName = user.address?.city ?? null
+
         const { countryCode, state, stateCode } = await resolveLocationCodes(
           countryName,
           cityName
@@ -102,6 +110,7 @@ const GeneralInfoStep = ({
           city: cityName,
           professionalSummary: user.professionalSummary ?? ''
         })
+
         setIsUserFetched(true)
       })()
     },
