@@ -12,6 +12,7 @@ import { PaperProps } from '@mui/material/Paper'
 interface Component {
   component: React.ReactElement
   paperProps?: PaperProps
+  hideCloseIcon?: boolean
 }
 
 interface ModalProvideContext {
@@ -31,12 +32,14 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+  const [hideCloseIcon, setHideCloseIcon] = useState<boolean>(false)
 
   const closeModal = useCallback(() => {
     setModal(null)
     setPaperProps({})
     setTimer(null)
-  }, [setModal, setPaperProps, setTimer])
+    setHideCloseIcon(false)
+  }, [setModal, setPaperProps, setTimer, setHideCloseIcon])
 
   const closeModalAfterDelay = useCallback(
     (delay?: number) => {
@@ -47,13 +50,17 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   )
 
   const openModal = useCallback(
-    ({ component, paperProps }: Component, delayToClose?: number) => {
+    (
+      { component, paperProps, hideCloseIcon }: Component,
+      delayToClose?: number
+    ) => {
       setModal(component)
+      setHideCloseIcon(Boolean(hideCloseIcon))
 
       paperProps && setPaperProps(paperProps)
       delayToClose && closeModalAfterDelay(delayToClose)
     },
-    [setModal, setPaperProps, closeModalAfterDelay]
+    [setModal, setPaperProps, setHideCloseIcon, closeModalAfterDelay]
   )
 
   const contextValue = useMemo(
@@ -66,8 +73,10 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
       {children}
       {modal && (
         <PopupDialog
+          closeModal={closeModal}
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
+          hideCloseIcon={hideCloseIcon}
           paperProps={paperProps}
           timerId={timer}
         />

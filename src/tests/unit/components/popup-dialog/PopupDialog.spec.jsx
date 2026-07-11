@@ -6,6 +6,7 @@ import PopupDialog from '~/components/popup-dialog/PopupDialog'
 const closeModal = vi.fn()
 const closeModalAfterDelay = vi.fn()
 const setFullScreen = vi.fn()
+const checkConfirmation = vi.fn()
 
 const props = {
   content: 'test',
@@ -18,12 +19,13 @@ const props = {
 
 vi.mock('~/hooks/use-confirm', () => {
   return {
-    default: () => ({ checkConfirmation: () => true })
+    default: () => ({ checkConfirmation })
   }
 })
 
 describe('Popup dialog test', () => {
   beforeEach(() => {
+    vi.clearAllMocks()
     render(<PopupDialog {...props} />)
   })
 
@@ -31,6 +33,33 @@ describe('Popup dialog test', () => {
     const content = screen.getByText(props.content)
 
     expect(content).toBeInTheDocument()
+  })
+
+  it('should close modal when close confirmation resolves to true', async () => {
+    checkConfirmation.mockResolvedValue(true)
+    const closeButton = screen.getByTestId('CloseIcon').closest('button')
+
+    fireEvent.click(closeButton)
+
+    await waitFor(() => expect(closeModal).toHaveBeenCalledTimes(1))
+  })
+
+  it('should not close modal when close confirmation resolves to false', async () => {
+    checkConfirmation.mockResolvedValue(false)
+    const closeButton = screen.getByTestId('CloseIcon').closest('button')
+
+    fireEvent.click(closeButton)
+
+    await waitFor(() => expect(checkConfirmation).toHaveBeenCalled())
+    expect(closeModal).not.toHaveBeenCalled()
+  })
+})
+
+describe('Popup dialog test with hideCloseIcon', () => {
+  it('should not render close icon when hideCloseIcon is true', () => {
+    render(<PopupDialog {...props} hideCloseIcon />)
+
+    expect(screen.queryByTestId('CloseIcon')).not.toBeInTheDocument()
   })
 })
 

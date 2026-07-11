@@ -20,11 +20,21 @@ export const styles = {
     typography: { xs: 'midTitle', sm: 'h5' },
     pt: { xs: '5px', sm: 0 },
     width: '100%',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
+    color: 'primary.700'
   },
   blockTitle: {
+    wrapper: {
+      textAlign: 'left',
+      mb: 0
+    },
     title: {
       mb: '12px'
+    },
+    description: {
+      color: 'primary.600',
+      typography: 'body1',
+      pl: { sm: '34px' }
     }
   }
 }

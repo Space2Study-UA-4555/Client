@@ -9,8 +9,10 @@ import GeneralInfoStep from '~/containers/tutor-home-page/general-info-step/Gene
 import AddPhotoStep from '~/containers/tutor-home-page/add-photo-step/AddPhotoStep'
 import SubjectsStep from '~/containers/tutor-home-page/subjects-step/SubjectsStep'
 import LanguageStep from '~/containers/tutor-home-page/language-step/LanguageStep'
+import useConfirm from '~/hooks/use-confirm'
 
 import {
+  studentStepLabels,
   tutorStepLabels,
   initialValues
 } from '~/components/user-steps-wrapper/constants'
@@ -23,10 +25,15 @@ interface UserStepsWrapperProps {
 const UserStepsWrapper: FC<UserStepsWrapperProps> = ({ userRole }) => {
   const [isUserFetched, setIsUserFetched] = useState(false)
   const dispatch = useAppDispatch()
+  const { setNeedConfirmation } = useConfirm()
 
   useEffect(() => {
     dispatch(markFirstLoginComplete())
   }, [dispatch])
+
+  useEffect(() => {
+    setNeedConfirmation(true)
+  }, [setNeedConfirmation])
 
   const childrenArr = [
     <GeneralInfoStep
@@ -39,7 +46,7 @@ const UserStepsWrapper: FC<UserStepsWrapperProps> = ({ userRole }) => {
     <AddPhotoStep key='4' />
   ]
 
-  const stepLabels = userRole === student ? '' : tutorStepLabels
+  const stepLabels = userRole === student ? studentStepLabels : tutorStepLabels
 
   return (
     <StepProvider initialValues={initialValues} stepLabels={stepLabels}>
