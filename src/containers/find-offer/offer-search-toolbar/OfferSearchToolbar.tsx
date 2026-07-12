@@ -67,6 +67,7 @@ const OfferSearchToolbar: FC<OfferSearchToolbarProps> = ({
         valueField='_id'
       />
       <AsyncAutocomplete
+        fetchCondition={Boolean(categoryId)}
         labelField='name'
         onChange={onSubjectChange}
         service={getSubjectsNames}

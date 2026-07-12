@@ -71,7 +71,7 @@ describe('OfferSearchToolbar container', () => {
   })
 
   it('sets subjectId on subject select', async () => {
-    renderToolbar()
+    renderToolbar('/?categoryId=1')
 
     await selectOption('breadCrumbs.subject', 'Subject 1')
 
@@ -93,6 +93,27 @@ describe('OfferSearchToolbar container', () => {
       expect(screen.getByTestId('search-params').textContent).toContain(
         'search=John'
       )
+    })
+  })
+
+  it('does not fetch subject names until a category is selected', async () => {
+    subjectService.getSubjectsNames.mockClear()
+
+    renderToolbar()
+
+    await waitFor(() => {
+      expect(categoryService.getCategoriesNames).toHaveBeenCalled()
+    })
+    expect(subjectService.getSubjectsNames).not.toHaveBeenCalled()
+  })
+
+  it('fetches subject names for the selected category', async () => {
+    subjectService.getSubjectsNames.mockClear()
+
+    renderToolbar('/?categoryId=1')
+
+    await waitFor(() => {
+      expect(subjectService.getSubjectsNames).toHaveBeenCalledWith('1')
     })
   })
 
