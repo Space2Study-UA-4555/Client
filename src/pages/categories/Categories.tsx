@@ -10,6 +10,7 @@ import useLoadMore from '~/hooks/use-load-more'
 import useBreakpoints from '~/hooks/use-breakpoints'
 
 import { categoryService } from '~/services/category-service'
+import { useModalContext } from '~/context/modal-context'
 
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
@@ -19,6 +20,8 @@ import OfferRequestBlock from '~/containers/find-offer/offer-request-block/Offer
 import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocomplete'
 import CardsList from '~/components/cards-list/CardsList'
 import CardWithLink from '~/components/card-with-link/CardWithLink'
+import NotFoundResults from '~/components/not-found-results/NotFoundResults'
+import CreateSubjectModal from '~/containers/find-offer/create-new-subject/CreateNewSubject'
 
 import { CategoriesParams, CategoryInterface } from '~/types'
 import { itemsLoadLimit } from '~/constants'
@@ -35,6 +38,7 @@ const Categories = () => {
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
   const breakpoints = useBreakpoints()
+  const { openModal } = useModalContext()
 
   const cardsLimit = getScreenBasedLimit(breakpoints, itemsLoadLimit)
   const oppositeRole = getOpositeRole(userRole)
@@ -90,6 +94,9 @@ const Categories = () => {
     [categories, oppositeRole, t]
   )
 
+  const handleOpenModal = () =>
+    openModal({ component: <CreateSubjectModal /> })
+
   return (
     <PageWrapper>
       <OfferRequestBlock />
@@ -142,3 +149,4 @@ const Categories = () => {
 }
 
 export default Categories
+
