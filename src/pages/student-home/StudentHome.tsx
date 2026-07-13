@@ -15,18 +15,19 @@ const StudentHome = () => {
   const { isFirstLogin, userRole } = useAppSelector((state) => state.appMain)
 
   useEffect(() => {
-    // if (isFirstLogin) {
-    openModal({
-      component: <UserStepsWrapper userRole={userRole} />,
-      paperProps: {
-        sx: {
-          maxHeight: { sm: '652px' },
-          height: '100%',
-          maxWidth: '1130px',
-          width: '100%'
+    if (isFirstLogin) {
+      openModal({
+        component: <UserStepsWrapper userRole={userRole} />,
+        paperProps: {
+          sx: {
+            maxHeight: { sm: '652px' },
+            height: '100%',
+            maxWidth: '1130px',
+            width: '100%'
+          }
         }
-      }
-    })
+      })
+    }
   }, [openModal, isFirstLogin, userRole])
 
   return (
