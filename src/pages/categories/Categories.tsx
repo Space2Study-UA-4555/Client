@@ -1,34 +1,31 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { SxProps } from '@mui/material'
 import Box from '@mui/material/Box'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 
 import { useAppSelector } from '~/hooks/use-redux'
-import useLoadMore from '~/hooks/use-load-more'
 import useCategoriesNames from '~/hooks/use-categories-names'
+import useLoadMore from '~/hooks/use-load-more'
+import useBreakpoints from '~/hooks/use-breakpoints'
+
 import { categoryService } from '~/services/category-service'
-import { useModalContext } from '~/context/modal-context'
 
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
-import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocomplete'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
-import NotFoundResults from '~/components/not-found-results/NotFoundResults'
-import CardsList from '~/components/cards-list/CardsList'
-import CardWithLink from '~/components/card-with-link/CardWithLink'
 import DirectionLink from '~/components/direction-link/DirectionLink'
-import CreateSubjectModal from '~/containers/find-offer/create-new-subject/CreateNewSubject'
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
-import useBreakpoints from '~/hooks/use-breakpoints'
-import serviceIcon from '~/assets/img/student-home-page/service_icon.png'
+import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocomplete'
+import CardsList from '~/components/cards-list/CardsList'
+import CardWithLink from '~/components/card-with-link/CardWithLink'
+
+import { CategoriesParams, CategoryInterface } from '~/types'
+import { itemsLoadLimit } from '~/constants'
 import { getOpositeRole, getScreenBasedLimit } from '~/utils/helper-functions'
 
-import { CategoryInterface, SizeEnum } from '~/types'
-import { itemsLoadLimit } from '~/constants'
-import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/categories/Categories.styles'
+import { authRoutes } from '~/router/constants/authRoutes'
 
 const Categories = () => {
   const [match, setMatch] = useState<string>('')
@@ -38,33 +35,20 @@ const Categories = () => {
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
   const breakpoints = useBreakpoints()
-  const { openModal } = useModalContext()
 
   const cardsLimit = getScreenBasedLimit(breakpoints, itemsLoadLimit)
-
-  const categoriesStyles = styles as {
-    navigation: SxProps
-    titleWithDescription: {
-      wrapper?: SxProps
-      title?: SxProps
-      description?: SxProps
-    }
-    searchToolbar: SxProps
-  }
+  const oppositeRole = getOpositeRole(userRole)
 
   const {
-    loading: categoryNamesLoading,
+    loading: categoriesNamesLoading,
     response: categoriesNamesItems,
     fetchData
   } = useCategoriesNames({
     fetchOnMount: false
   })
 
-  const categoryNamesOptions = useMemo(
-    () =>
-      (categoriesNamesItems || []).map((item) =>
-        typeof item === 'string' ? item : item.name
-      ),
+  const categoriesOptions = useMemo(
+    () => categoriesNamesItems.map((item) => item.name),
     [categoriesNamesItems]
   )
 
@@ -74,8 +58,7 @@ const Categories = () => {
   }
 
   const getCategories = useCallback(
-    (data?: Pick<CategoryInterface, 'name'>) =>
-      categoryService.getCategories(data),
+    (data?: Partial<CategoriesParams>) => categoryService.getCategories(data),
     []
   )
 
@@ -85,33 +68,27 @@ const Categories = () => {
     resetData,
     loadMore,
     isExpandable
-  } = useLoadMore<CategoryInterface, Pick<CategoryInterface, 'name'>>({
+  } = useLoadMore<CategoryInterface, Partial<CategoriesParams>>({
     service: getCategories,
     limit: cardsLimit,
     params
   })
 
-  const oppositeRole = getOpositeRole(userRole)
-
   const cards = useMemo(
     () =>
-      categories.map((item: CategoryInterface) => {
-        return (
-          <CardWithLink
-            description={`${item.totalOffers[oppositeRole]} ${t(
-              'categoriesPage.offers'
-            )}`}
-            img={serviceIcon}
-            key={item._id}
-            link={`${authRoutes.subjects.path}?categoryId=${item._id}`}
-            title={item.name}
-          />
-        )
-      }),
+      categories.map((item) => (
+        <CardWithLink
+          description={`${item.totalOffers[oppositeRole]} ${t(
+            'categoriesPage.offers'
+          )}`}
+          img={item.appearance.icon}
+          key={item._id}
+          link={`${authRoutes.subjects.path}?categoryId=${item._id}`}
+          title={item.name}
+        />
+      )),
     [categories, oppositeRole, t]
   )
-
-  const handleOpenModal = () => openModal({ component: <CreateSubjectModal /> })
 
   return (
     <PageWrapper>
@@ -119,24 +96,24 @@ const Categories = () => {
 
       <TitleWithDescription
         description={t('categoriesPage.description')}
-        style={categoriesStyles.titleWithDescription}
+        style={styles.titleWithDescription}
         title={t('categoriesPage.title')}
       />
 
-      <Box sx={categoriesStyles.navigation}>
+      <Box style={styles.navigation}>
         <DirectionLink
-          after={<ArrowForwardIcon fontSize={SizeEnum.Small} />}
+          after={<ArrowForwardIcon />}
           linkTo={authRoutes.findOffers.path}
           title={t('categoriesPage.showAllOffers')}
         />
       </Box>
 
-      <AppToolbar sx={categoriesStyles.searchToolbar}>
+      <AppToolbar sx={styles.searchToolbar}>
         <SearchAutocomplete
-          loading={categoryNamesLoading}
+          loading={categoriesNamesLoading}
           onFocus={getCategoryNames}
           onSearchChange={resetData}
-          options={categoryNamesOptions}
+          options={categoriesOptions}
           search={match}
           setSearch={setMatch}
           textFieldProps={{

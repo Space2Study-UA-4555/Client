@@ -1,6 +1,11 @@
 {
   "generalInfo": {
     "title": "Please complete the registration form for the best possible experience.",
+    "firstNameLabel": "First name*",
+    "lastNameLabel": "Last name*",
+    "countryLabel": "Country",
+    "stateLabel": "State / Region",
+    "cityLabel": "City",
     "textFieldLabel": "Describe in short your professional status",
     "helperText": "Inputs with the * sign are required"
   },
@@ -14,7 +19,7 @@
   },
   "categories": {
     "title": "Please choose the main subjects based on the category. You can add others later.",
-    "mainSubjectsLabel": "Main Study Category",
+    "mainSubjectsLabel": "Main Tutoring Category",
     "subjectLabel": "Subject",
     "btnText": "Add one more subject",
     "emptyFields": "All fields must be filled",
