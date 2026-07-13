@@ -100,7 +100,7 @@ describe('GeneralInfoStep — stable unit tests', () => {
   it('renders first name and last name fields', () => {
     renderStep()
     const inputs = screen.getAllByRole('textbox')
-    expect(inputs.length).toBe(3)
+    expect(inputs).toHaveLength(3)
   })
 
   it('calls handleStepData on mount', () => {
