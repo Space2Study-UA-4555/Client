@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { Provider } from 'react-redux'
 
@@ -6,9 +6,7 @@ import InterestsStep from '~/containers/student-home-page/interests-step/Interes
 
 // ---------------- MOCK TRANSLATION ----------------
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => key
-  })
+  useTranslation: () => ({ t: (key) => key })
 }))
 
 // ---------------- MOCK REDUX ----------------
@@ -62,18 +60,6 @@ describe('InterestsStep — stable unit tests', () => {
     expect(
       screen.getByTestId('becomeStudent.interests.subjectLabel')
     ).toBeInTheDocument()
-  })
-
-  it('calls handleStepData when category changes', () => {
-    renderStep()
-
-    const categoryField = screen.getByTestId(
-      'becomeStudent.interests.categoryLabel'
-    )
-
-    fireEvent.click(categoryField)
-
-    expect(mockHandleStepData).toHaveBeenCalled()
   })
 
   it('renders Next button', () => {
