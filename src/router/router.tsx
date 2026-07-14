@@ -35,10 +35,17 @@ export const routerConfig = (
       {authRouter}
       {tutorRouter}
       {studentRouter}
+
       <Route
         element={<UserStepsWrapper userRole='tutor' />}
         path='/tutor/signup'
       />
+
+      <Route
+        element={<UserStepsWrapper userRole='student' />}
+        path='/student/signup'
+      />
+
       <Route path={guestRoutes.error.route}>{errorRouter}</Route>
       <Route element={<Logout />} path={authRoutes.accountMenu.logout.route} />
     </Route>
