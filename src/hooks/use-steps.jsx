@@ -62,7 +62,7 @@ const useSteps = ({ steps }) => {
   const handleSubmit = () => {
     const hasErrors = stepErrors.find((error) => error)
 
-    const { firstName, lastName, country, city, professionalSummary } =
+    const { firstName, lastName, country, state, city, professionalSummary } =
       stepData.generalInfo.data
 
     const data = {
@@ -71,6 +71,7 @@ const useSteps = ({ steps }) => {
       lastName,
       address: {
         country: country ?? '',
+        state: state ?? '',
         city: city ?? ''
       },
       professionalSummary: professionalSummary,
