@@ -52,7 +52,7 @@ export interface UpdateUserParams
     | 'professionalSummary'
     | 'nativeLanguage'
   > {
-  mainSubjects: SubjectNameInterface[]
+  mainSubjects?: SubjectNameInterface[]
 }
 
 export interface LoginParams {
