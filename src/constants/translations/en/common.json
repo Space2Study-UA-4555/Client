@@ -64,7 +64,11 @@
     "closeOffer": "Close an offer",
     "sortBy": "Sort by:",
     "subject": "Subject:",
-    "level": "Level:"
+    "level": "Level:",
+    "addBookmark": "Add to bookmarks",
+    "removeBookmark": "Remove from bookmarks",
+    "inlineView": "Inline view",
+    "gridView": "Grid view"
   },
   "errorMessages": {
     "emailValid": "Email should be of the following format: “local-part@domain.com”",

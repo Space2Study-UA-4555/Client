@@ -52,5 +52,9 @@
   },
   "otherOffers":{
     "title":"Other offers"
+  },
+  "viewAllCategories": "View all categories",
+  "popularCategories": {
+    "error": "Failed to load categories"
   }
 }

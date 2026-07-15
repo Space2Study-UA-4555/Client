@@ -50,5 +50,9 @@
   },
   "otherOffers":{
     "title":"Інші пропозиції"
+  },
+  "viewAllCategories": "Всі категорії",
+  "popularCategories": {
+    "error": "Не вдалося завантажити категорії"
   }
 }
