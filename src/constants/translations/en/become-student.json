@@ -1,4 +1,10 @@
 {
+  "stepLabels": {
+    "general": "General",
+    "interests": "Interests",
+    "language": "Language",
+    "photo": "Photo"
+  },
   "generalInfo": {
     "title": "Please complete the registration form for the best possible experience.",
     "firstNameLabel": "First name*",
