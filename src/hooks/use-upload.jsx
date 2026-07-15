@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { filesValidation } from '~/utils/validations/files'
 
+const mergeFiles = (existing, incoming, maxQuantityFiles) => {
+  const incomingFiles = [...incoming]
+
+  if (maxQuantityFiles === 1) {
+    return incomingFiles.slice(0, 1)
+  }
+
+  return [...existing, ...incomingFiles].slice(0, maxQuantityFiles)
+}
+
 const useUpload = ({ files, validationData, emitter }) => {
   const [isDrag, setIsDrag] = useState(false)
 
@@ -14,8 +24,9 @@ const useUpload = ({ files, validationData, emitter }) => {
   }
   const dragDrop = (e) => {
     e.preventDefault()
-    const newFiles = [...files, ...e.dataTransfer.files].slice(
-      0,
+    const newFiles = mergeFiles(
+      files,
+      e.dataTransfer.files,
       validationData.maxQuantityFiles
     )
     const error = filesValidation(newFiles, validationData)
@@ -26,8 +37,9 @@ const useUpload = ({ files, validationData, emitter }) => {
 
   const addFiles = (e) => {
     e.preventDefault()
-    const newFiles = [...files, ...e.target.files].slice(
-      0,
+    const newFiles = mergeFiles(
+      files,
+      e.target.files,
       validationData.maxQuantityFiles
     )
     const error = filesValidation(newFiles, validationData)
