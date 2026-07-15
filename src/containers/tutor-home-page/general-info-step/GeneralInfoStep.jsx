@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 
 import AppTextArea from '~/components/app-text-area/AppTextArea'
 import AppTextField from '~/components/app-text-field/AppTextField'
@@ -24,6 +23,7 @@ import {
 } from '~/components/user-steps-wrapper/constants'
 
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
+import StepLayout from '~/containers/tutor-home-page/step-layout/StepLayout'
 
 const resolveLocationCodes = async (countryName, cityName) => {
   if (!countryName) {
@@ -184,104 +184,89 @@ const GeneralInfoStep = ({
   const getError = (error) => (error ? t(error) : '')
 
   return (
-    <Box sx={styles.container}>
-      <Box sx={styles.imgContainer}>
-        <Box alt='' component='img' src={img} sx={styles.img} />
+    <StepLayout
+      btnsBox={btnsBox}
+      hint={t('becomeTutor.generalInfo.helperText')}
+      imgSrc={img}
+      title={t('becomeTutor.generalInfo.title')}
+    >
+      <Box sx={styles.nameFields}>
+        <AppTextField
+          autoFocus
+          errorMsg={getError(errors.firstName)}
+          label={t('becomeTutor.generalInfo.firstNameLabel')}
+          onBlur={handleNameBlur('firstName')}
+          onChange={handleInputChange('firstName')}
+          value={data.firstName}
+          withHelperText={Boolean(errors.firstName)}
+        />
+
+        <AppTextField
+          errorMsg={getError(errors.lastName)}
+          label={t('becomeTutor.generalInfo.lastNameLabel')}
+          onBlur={handleNameBlur('lastName')}
+          onChange={handleInputChange('lastName')}
+          value={data.lastName}
+          withHelperText={Boolean(errors.lastName)}
+        />
       </Box>
 
-      <Box sx={styles.rightBox}>
-        <Box sx={styles.form}>
-          <Typography sx={styles.title}>
-            {t('becomeTutor.generalInfo.title')}
-          </Typography>
+      <Box sx={styles.locationFields}>
+        <AsyncAutocomplete
+          fetchOnFocus={false}
+          labelField='name'
+          onChange={handleCountryChange}
+          service={locationService.getCountries}
+          textFieldProps={{
+            label: t('becomeTutor.generalInfo.countryLabel')
+          }}
+          value={data.country}
+          valueField='name'
+        />
 
-          <Box sx={styles.mobileImgContainer}>
-            <Box alt='' component='img' src={img} sx={styles.mobileImg} />
-          </Box>
+        <AsyncAutocomplete
+          disabled={!data.countryCode}
+          fetchCondition={Boolean(data.countryCode)}
+          fetchOnFocus={false}
+          labelField='name'
+          onChange={handleStateChange}
+          service={getStates}
+          textFieldProps={{
+            label: t('becomeTutor.generalInfo.stateLabel')
+          }}
+          value={data.state}
+          valueField='name'
+        />
 
-          <Box sx={styles.nameFields}>
-            <AppTextField
-              autoFocus
-              errorMsg={getError(errors.firstName)}
-              label={t('becomeTutor.generalInfo.firstNameLabel')}
-              onBlur={handleNameBlur('firstName')}
-              onChange={handleInputChange('firstName')}
-              value={data.firstName}
-              withHelperText={Boolean(errors.firstName)}
-            />
-
-            <AppTextField
-              errorMsg={getError(errors.lastName)}
-              label={t('becomeTutor.generalInfo.lastNameLabel')}
-              onBlur={handleNameBlur('lastName')}
-              onChange={handleInputChange('lastName')}
-              value={data.lastName}
-              withHelperText={Boolean(errors.lastName)}
-            />
-          </Box>
-
-          <Box sx={styles.locationFields}>
-            <AsyncAutocomplete
-              fetchOnFocus={false}
-              labelField='name'
-              onChange={handleCountryChange}
-              service={locationService.getCountries}
-              textFieldProps={{
-                label: t('becomeTutor.generalInfo.countryLabel')
-              }}
-              value={data.country}
-              valueField='name'
-            />
-
-            <AsyncAutocomplete
-              disabled={!data.countryCode}
-              fetchCondition={Boolean(data.countryCode)}
-              fetchOnFocus={false}
-              labelField='name'
-              onChange={handleStateChange}
-              service={getStates}
-              textFieldProps={{
-                label: t('becomeTutor.generalInfo.stateLabel')
-              }}
-              value={data.state}
-              valueField='name'
-            />
-
-            <AsyncAutocomplete
-              disabled={!data.stateCode}
-              fetchCondition={Boolean(data.stateCode)}
-              fetchOnFocus={false}
-              labelField='name'
-              onChange={handleCityChange}
-              service={getCities}
-              textFieldProps={{
-                label: t('becomeTutor.generalInfo.cityLabel')
-              }}
-              value={data.city}
-              valueField='name'
-            />
-          </Box>
-
-          <AppTextArea
-            errorMsg={getError(errors.professionalSummary)}
-            fullWidth
-            maxLength={200}
-            onBlur={handleBlur('professionalSummary')}
-            onChange={handleInputChange('professionalSummary')}
-            placeholder={t('becomeTutor.generalInfo.textFieldLabel')}
-            sx={styles.textArea}
-            textFieldStyles={styles.textAreaInput}
-            value={data.professionalSummary}
-          />
-
-          <Typography sx={styles.helperText}>
-            {t('becomeTutor.generalInfo.helperText')}
-          </Typography>
-        </Box>
-
-        <Box sx={styles.btnsBox}>{btnsBox}</Box>
+        <AsyncAutocomplete
+          disabled={!data.stateCode}
+          fetchCondition={Boolean(data.stateCode)}
+          fetchOnFocus={false}
+          labelField='name'
+          onChange={handleCityChange}
+          service={getCities}
+          textFieldProps={{
+            label: t('becomeTutor.generalInfo.cityLabel')
+          }}
+          value={data.city}
+          valueField='name'
+        />
       </Box>
-    </Box>
+
+      <AppTextArea
+        errorMsg={getError(errors.professionalSummary)}
+        fullWidth
+        maxLength={200}
+        maxRows={3}
+        minRows={3}
+        onBlur={handleBlur('professionalSummary')}
+        onChange={handleInputChange('professionalSummary')}
+        placeholder={t('becomeTutor.generalInfo.textFieldLabel')}
+        sx={styles.textArea}
+        textFieldStyles={styles.textAreaInput}
+        value={data.professionalSummary}
+      />
+    </StepLayout>
   )
 }
 
