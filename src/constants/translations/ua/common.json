@@ -49,7 +49,11 @@
     "level": "Рівень:",
     "makeActive": "Зробити активним",
     "moveToDraft": "Перемістити до чернетки",
-    "closeOffer": "Закрити пропозицію"
+    "closeOffer": "Закрити пропозицію",
+    "addBookmark": "Додати в закладки",
+    "removeBookmark": "Прибрати із закладок",
+    "inlineView": "Вигляд списком",
+    "gridView": "Вигляд сіткою"
   },
   "levels": {
     "beginner": "Початковий",

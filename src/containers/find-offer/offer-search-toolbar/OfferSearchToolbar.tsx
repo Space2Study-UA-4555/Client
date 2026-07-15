@@ -37,22 +37,37 @@ const OfferSearchToolbar: FC<OfferSearchToolbarProps> = ({
     _: SyntheticEvent,
     value: CategoryNameInterface | null
   ) => {
-    searchParams.set('categoryId', value?._id ?? '')
-    searchParams.delete('subjectId')
-    setSearchParams(searchParams)
+    const newParams = new URLSearchParams(searchParams)
+    if (value?._id) {
+      newParams.set('categoryId', value._id)
+    } else {
+      newParams.delete('categoryId')
+    }
+    newParams.delete('subjectId')
+    setSearchParams(newParams)
   }
 
   const onSubjectChange = (
     _: SyntheticEvent,
     value: SubjectNameInterface | null
   ) => {
-    searchParams.set('subjectId', value?._id ?? '')
-    setSearchParams(searchParams)
+    const newParams = new URLSearchParams(searchParams)
+    if (value?._id) {
+      newParams.set('subjectId', value._id)
+    } else {
+      newParams.delete('subjectId')
+    }
+    setSearchParams(newParams)
   }
 
   const updateSearch = (search: string) => {
-    searchParams.set('search', search)
-    setSearchParams(searchParams)
+    const newParams = new URLSearchParams(searchParams)
+    if (search) {
+      newParams.set('search', search)
+    } else {
+      newParams.delete('search')
+    }
+    setSearchParams(newParams)
   }
 
   const autoCompletes = (

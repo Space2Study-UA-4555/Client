@@ -5,6 +5,10 @@ import { ViewModeEnum } from '~/types'
 
 const onChange = vi.fn()
 
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
 const renderSwitcher = (activeView = ViewModeEnum.Inline) =>
   render(<AppViewSwitcher activeView={activeView} onChange={onChange} />)
 

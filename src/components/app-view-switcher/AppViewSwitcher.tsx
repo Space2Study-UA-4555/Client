@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -21,9 +22,12 @@ const AppViewSwitcher: FC<AppViewSwitcherProps> = ({
   onChange,
   sx
 }) => {
+  const { t } = useTranslation()
+
   return (
     <Box sx={spliceSx(styles.container, sx)}>
       <IconButton
+        aria-label={t('common.labels.inlineView')}
         aria-pressed={activeView === ViewModeEnum.Inline}
         data-testid='inline-view-button'
         onClick={() => onChange(ViewModeEnum.Inline)}
@@ -32,6 +36,7 @@ const AppViewSwitcher: FC<AppViewSwitcherProps> = ({
         <ViewListIcon />
       </IconButton>
       <IconButton
+        aria-label={t('common.labels.gridView')}
         aria-pressed={activeView === ViewModeEnum.Grid}
         data-testid='grid-view-button'
         onClick={() => onChange(ViewModeEnum.Grid)}

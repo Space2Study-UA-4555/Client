@@ -44,6 +44,10 @@ const renderPage = (userRole) =>
   })
 
 describe('FindOffers page', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('renders the title with description', () => {
     renderPage('student')
 

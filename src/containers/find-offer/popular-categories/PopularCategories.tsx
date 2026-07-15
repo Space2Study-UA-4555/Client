@@ -34,25 +34,33 @@ const PopularCategories = () => {
     []
   )
 
-  const { loading, response } = useAxios<ItemsWithCount<CategoryInterface>>({
+  const { loading, response, error } = useAxios<
+    ItemsWithCount<CategoryInterface>
+  >({
     service: getCategories,
     defaultResponse: defaultResponses.itemsWithCount
   })
 
   const oppositeRole = getOpositeRole(userRole)
 
-  const cards = response.items.map((category) => (
-    <CategoryCard
-      color={category.appearance.color}
-      description={`${category.totalOffers[oppositeRole]} ${t(
-        'categoriesPage.offers'
-      )}`}
-      icon={category.appearance.icon}
-      key={category._id}
-      link={`${authRoutes.subjects.path}?categoryId=${category._id}`}
-      title={category.name}
-    />
-  ))
+  const cards = error ? (
+    <Typography data-testid='categories-error'>
+      {t('findOffers.popularCategories.error')}
+    </Typography>
+  ) : (
+    response.items.map((category) => (
+      <CategoryCard
+        color={category.appearance.color}
+        description={`${category.totalOffers[oppositeRole]} ${t(
+          'categoriesPage.offers'
+        )}`}
+        icon={category.appearance.icon}
+        key={category._id}
+        link={`${authRoutes.subjects.path}?categoryId=${category._id}`}
+        title={category.name}
+      />
+    ))
+  )
 
   return (
     <Box sx={styles.container}>

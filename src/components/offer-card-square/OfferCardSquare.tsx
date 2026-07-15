@@ -62,6 +62,11 @@ const OfferCardSquare: FC<OfferCardSquareProps> = ({
           sx={styles.userInfo}
         />
         <IconButton
+          aria-label={
+            isBookmarked
+              ? t('common.labels.removeBookmark')
+              : t('common.labels.addBookmark')
+          }
           data-testid='bookmark-button'
           onClick={() => onBookmarkClick(offer._id)}
           sx={styles.bookmarkButton}

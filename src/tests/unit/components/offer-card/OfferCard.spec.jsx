@@ -25,6 +25,10 @@ const mockOffer = {
 const onBookmarkClick = vi.fn()
 const onActionClick = vi.fn()
 
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
 const buttonActions = [
   {
     label: 'common.labels.viewDetails',

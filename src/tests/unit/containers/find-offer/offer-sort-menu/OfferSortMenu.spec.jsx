@@ -5,6 +5,10 @@ import { SortByEnum } from '~/types'
 
 const setSort = vi.fn()
 
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
 const renderMenu = (sort = SortByEnum.Newest) =>
   render(<OfferSortMenu setSort={setSort} sort={sort} />)
 

@@ -79,6 +79,11 @@ const OfferCard: FC<OfferCardProps> = ({
             <Typography sx={styles.hour}>{`/${t('common.hour')}`}</Typography>
           </Box>
           <IconButton
+            aria-label={
+              isBookmarked
+                ? t('common.labels.removeBookmark')
+                : t('common.labels.addBookmark')
+            }
             data-testid='bookmark-button'
             onClick={() => onBookmarkClick(offer._id)}
             sx={styles.bookmarkButton}

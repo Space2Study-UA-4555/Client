@@ -26,6 +26,10 @@ const createMockOffer = (id) => ({
 const mockOffers = [createMockOffer('1'), createMockOffer('2')]
 const onBookmarkClick = vi.fn()
 
+beforeEach(() => {
+  vi.clearAllMocks()
+})
+
 const renderContainer = (viewMode) =>
   renderWithProviders(
     <OfferContainer
