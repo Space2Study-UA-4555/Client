@@ -5,6 +5,8 @@
   "searchLabel": "What would you like to learn?",
   "viewMore": "View more",
   "offers": "offers",
+  "noResultsDescription": "We couldn’t find what you were searching for. Please try again or suggest a new category that you were looking for.",
+  "requestNewCategory": "Request a new category",
   "newSubject": {
     "successMessage": "Request send successfully",
     "title": "Request a new study",
