@@ -1,0 +1,38 @@
+{
+  "stepLabels": {
+    "general": "General",
+    "interests": "Interests",
+    "language": "Language",
+    "photo": "Photo"
+  },
+  "generalInfo": {
+    "title": "Please complete the registration form for the best possible experience.",
+    "firstNameLabel": "First name*",
+    "lastNameLabel": "Last name*",
+    "countryLabel": "Country",
+    "stateLabel": "State / Region",
+    "cityLabel": "City",
+    "helperText": "Inputs with the * sign are required"
+  },
+  "interests": {
+    "title": "Please choose your study interests based on the category.",
+    "categoryLabel": "Study Category",
+    "subjectLabel": "Subject",
+    "btnText": "Add one more subject",
+    "emptyFields": "All fields must be filled",
+    "sameSubject": "You have the same subject"
+  },
+  "languages": {
+    "title": "Please choose your preferred study language.",
+    "autocompleteLabel": "Your native language"
+  },
+  "photo": {
+    "imageAlt": "Your photo",
+    "button": "Upload your profile photo",
+    "placeholder": "Photo Preview",
+    "description": "Please upload a photo that represents you and helps others recognize you.",
+    "typeError": "Wrong file type. Only .png/.jpg/.jpeg files are allowed.",
+    "fileSizeError": "Size for one file cannot be more than 10MB."
+  },
+  "successMessage": "Success! Your data were added."
+}
