@@ -8,7 +8,7 @@ import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
 import { snackbarVariants } from '~/constants'
-import { getPhotoForApi } from '~/utils/photo-file'
+import { buildStepperPayload } from '~/utils/build-stepper-payload'
 
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -46,8 +46,7 @@ const useSteps = ({ steps }) => {
   })
 
   const stepErrors = Object.values(stepData).map(
-    (data) =>
-      data && data.errors && Object.values(data.errors).find((error) => error)
+    (data) => data?.errors && Object.values(data.errors).some(Boolean)
   )
 
   const next = () => {
@@ -61,24 +60,9 @@ const useSteps = ({ steps }) => {
   const isLastStep = activeStep === steps.length - 1
 
   const handleSubmit = () => {
-    const hasErrors = stepErrors.find((error) => error)
+    const hasErrors = stepErrors.some(Boolean)
 
-    const { firstName, lastName, country, state, city, professionalSummary } =
-      stepData.generalInfo.data
-
-    const data = {
-      photo: getPhotoForApi(stepData.photo[0]),
-      firstName,
-      lastName,
-      address: {
-        country: country ?? '',
-        state: state ?? '',
-        city: city ?? ''
-      },
-      professionalSummary: professionalSummary,
-      mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? ''
-    }
+    const data = buildStepperPayload(stepData, steps)
 
     !hasErrors && fetchData(data)
   }
