@@ -2,7 +2,7 @@ export const MB = 1_000_000
 
 export const validationData = {
   maxFileSize: 10 * MB,
-  filesTypes: ['image/jpeg', 'image/png'],
+  filesTypes: ['image/jpeg', 'image/jpg', 'image/png'],
   fileSizeError: 'becomeTutor.photo.fileSizeError',
   typeError: 'becomeTutor.photo.typeError',
   maxQuantityFiles: 1

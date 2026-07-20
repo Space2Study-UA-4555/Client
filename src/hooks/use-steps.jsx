@@ -8,6 +8,7 @@ import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
 import { snackbarVariants } from '~/constants'
+import { getPhotoForApi } from '~/utils/photo-file'
 
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -66,7 +67,7 @@ const useSteps = ({ steps }) => {
       stepData.generalInfo.data
 
     const data = {
-      photo: stepData.photo[0] ? stepData.photo[0] : '',
+      photo: getPhotoForApi(stepData.photo[0]),
       firstName,
       lastName,
       address: {

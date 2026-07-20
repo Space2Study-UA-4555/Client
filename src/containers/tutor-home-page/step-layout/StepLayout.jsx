@@ -5,24 +5,35 @@ import Typography from '@mui/material/Typography'
 
 import { stepLayoutStyles } from '~/containers/tutor-home-page/step-layout/stepLayout.styles'
 
-const StepLayout = ({ btnsBox, children, hint, imgSrc, title }) => (
+const StepLayout = ({
+  btnsBox,
+  children,
+  hint,
+  imgSrc,
+  leftContent,
+  title
+}) => (
   <Box sx={stepLayoutStyles.container}>
     <Box sx={stepLayoutStyles.imgContainer}>
-      <Box alt='' component='img' src={imgSrc} sx={stepLayoutStyles.img} />
+      {leftContent ?? (
+        <Box alt='' component='img' src={imgSrc} sx={stepLayoutStyles.img} />
+      )}
     </Box>
 
     <Box sx={stepLayoutStyles.rightBox}>
       <Box sx={stepLayoutStyles.header}>
         <Typography sx={stepLayoutStyles.title}>{title}</Typography>
 
-        <Box sx={stepLayoutStyles.mobileImgContainer}>
-          <Box
-            alt=''
-            component='img'
-            src={imgSrc}
-            sx={stepLayoutStyles.mobileImg}
-          />
-        </Box>
+        {!leftContent && (
+          <Box sx={stepLayoutStyles.mobileImgContainer}>
+            <Box
+              alt=''
+              component='img'
+              src={imgSrc}
+              sx={stepLayoutStyles.mobileImg}
+            />
+          </Box>
+        )}
       </Box>
 
       <Box sx={stepLayoutStyles.form}>{children}</Box>
@@ -39,7 +50,8 @@ StepLayout.propTypes = {
   btnsBox: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
   hint: PropTypes.string,
-  imgSrc: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string,
+  leftContent: PropTypes.node,
   title: PropTypes.string.isRequired
 }
 
