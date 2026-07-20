@@ -11,8 +11,14 @@ export const resolveNativeLanguage = (language) =>
 export const buildStepperPayload = (stepData, steps) => {
   const [generalLabel, subjectsLabel, languageLabel, photoLabel] = steps
 
-  const { firstName, lastName, country, state, city, professionalSummary } =
-    stepData[generalLabel].data
+  const {
+    firstName = '',
+    lastName = '',
+    country = null,
+    state = null,
+    city = null,
+    professionalSummary = ''
+  } = stepData[generalLabel]?.data ?? {}
 
   return {
     photo: getPhotoForApi(stepData[photoLabel]?.[0]),
@@ -24,7 +30,7 @@ export const buildStepperPayload = (stepData, steps) => {
       city: city ?? ''
     },
     professionalSummary,
-    mainSubjects: mapSubjectIds(stepData[subjectsLabel]),
+    mainSubjects: mapSubjectIds(stepData[subjectsLabel] ?? []),
     nativeLanguage: resolveNativeLanguage(stepData[languageLabel])
   }
 }
