@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-
 import AppButton from '~/components/app-button/AppButton'
 import AppChipList from '~/components/app-chips-list/AppChipList'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
@@ -14,6 +11,7 @@ import { ButtonVariantEnum } from '~/types'
 import img from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
 
 import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
+import StepLayout from '~/containers/tutor-home-page/step-layout/StepLayout'
 
 const isChip = (item) => Boolean(item.name)
 
@@ -142,68 +140,54 @@ const SubjectsStep = ({ btnsBox, stepLabel }) => {
   }
 
   return (
-    <Box sx={styles.container}>
-      <Box sx={styles.imgContainer}>
-        <Box alt='' component='img' src={img} sx={styles.img} />
-      </Box>
+    <StepLayout
+      btnsBox={btnsBox}
+      imgSrc={img}
+      title={t('becomeTutor.categories.title')}
+    >
+      <AsyncAutocomplete
+        fetchOnFocus={false}
+        labelField='name'
+        onChange={handleCategoryChange}
+        service={categoryService.getCategoriesNames}
+        textFieldProps={{
+          label: t('becomeTutor.categories.mainSubjectsLabel')
+        }}
+        value={category}
+        valueField='_id'
+      />
 
-      <Box sx={styles.rightBox}>
-        <Box sx={styles.form}>
-          <Typography sx={styles.title}>
-            {t('becomeTutor.categories.title')}
-          </Typography>
+      <AsyncAutocomplete
+        disabled={!category}
+        fetchCondition={Boolean(category)}
+        fetchOnFocus={false}
+        labelField='name'
+        onChange={handleSubjectChange}
+        service={getSubjectsNames}
+        textFieldProps={{
+          label: t('becomeTutor.categories.subjectLabel')
+        }}
+        value={subject}
+        valueField='_id'
+      />
 
-          <Box sx={styles.mobileImgContainer}>
-            <Box alt='' component='img' src={img} sx={styles.mobileImg} />
-          </Box>
+      <AppButton
+        disabled={!category || !subject}
+        onClick={handleAddSubject}
+        sx={styles.addSubjectBtn}
+        variant={ButtonVariantEnum.Tonal}
+      >
+        {t('becomeTutor.categories.btnText')}
+      </AppButton>
 
-          <AsyncAutocomplete
-            fetchOnFocus={false}
-            labelField='name'
-            onChange={handleCategoryChange}
-            service={categoryService.getCategoriesNames}
-            textFieldProps={{
-              label: t('becomeTutor.categories.mainSubjectsLabel')
-            }}
-            value={category}
-            valueField='_id'
-          />
-
-          <AsyncAutocomplete
-            disabled={!category}
-            fetchCondition={Boolean(category)}
-            fetchOnFocus={false}
-            labelField='name'
-            onChange={handleSubjectChange}
-            service={getSubjectsNames}
-            textFieldProps={{
-              label: t('becomeTutor.categories.subjectLabel')
-            }}
-            value={subject}
-            valueField='_id'
-          />
-
-          <AppButton
-            disabled={!category || !subject}
-            onClick={handleAddSubject}
-            sx={styles.addSubjectBtn}
-            variant={ButtonVariantEnum.Tonal}
-          >
-            {t('becomeTutor.categories.btnText')}
-          </AppButton>
-
-          {chips.length > 0 && (
-            <AppChipList
-              defaultQuantity={2}
-              handleChipDelete={handleSubjectDelete}
-              items={chips.map((item) => item.name)}
-            />
-          )}
-        </Box>
-
-        <Box sx={styles.btnsBox}>{btnsBox}</Box>
-      </Box>
-    </Box>
+      {chips.length > 0 && (
+        <AppChipList
+          defaultQuantity={2}
+          handleChipDelete={handleSubjectDelete}
+          items={chips.map((item) => item.name)}
+        />
+      )}
+    </StepLayout>
   )
 }
 

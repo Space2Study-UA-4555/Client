@@ -40,15 +40,16 @@ export const styles = {
     columnGap: '1px'
   },
   stepContent: {
-    display: { xs: 'flex', sm: 'block' },
-    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'column',
     flex: 1,
+    minHeight: 0,
+    overflow: 'hidden',
     mt: { xs: '24px', sm: '30px' }
   },
   btnWrapper: {
     display: 'flex',
-    justifyContent: 'space-between',
-    mt: '10px'
+    justifyContent: 'space-between'
   },
   btn: btnStyle,
   finishBtn: {
