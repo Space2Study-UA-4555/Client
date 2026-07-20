@@ -89,4 +89,20 @@ describe('buildStepperPayload', () => {
       'Polish'
     )
   })
+
+  it('should not throw when general info step data is missing', () => {
+    expect(buildStepperPayload({}, tutorSteps)).toEqual({
+      photo: '',
+      firstName: '',
+      lastName: '',
+      address: {
+        country: '',
+        state: '',
+        city: ''
+      },
+      professionalSummary: '',
+      mainSubjects: [],
+      nativeLanguage: 'English'
+    })
+  })
 })
