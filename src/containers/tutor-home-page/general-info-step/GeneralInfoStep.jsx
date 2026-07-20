@@ -25,41 +25,26 @@ import {
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import StepLayout from '~/containers/tutor-home-page/step-layout/StepLayout'
 
-const resolveLocationCodes = async (countryName, cityName) => {
+const resolveCountryCode = async (countryName) => {
   if (!countryName) {
-    return { countryCode: null, state: null, stateCode: null }
+    return null
   }
 
   const { data: countries } = await locationService.getCountries()
   const country = countries.find((item) => item.name === countryName)
-  const countryCode = country?.iso2 ?? null
 
-  if (!countryCode || !cityName) {
-    return { countryCode, state: null, stateCode: null }
+  return country?.iso2 ?? null
+}
+
+const resolveStateCode = async (countryCode, stateName) => {
+  if (!countryCode || !stateName) {
+    return null
   }
 
   const { data: states } = await locationService.getStates(countryCode)
+  const state = states.find((item) => item.name === stateName)
 
-  if (!states.length) {
-    return { countryCode, state: null, stateCode: null }
-  }
-
-  for (const stateItem of states) {
-    const { data: cities } = await locationService.getCities(
-      countryCode,
-      stateItem.iso2
-    )
-
-    if (cities.some((city) => city.name === cityName)) {
-      return {
-        countryCode,
-        state: stateItem.name,
-        stateCode: stateItem.iso2
-      }
-    }
-  }
-
-  return { countryCode, state: null, stateCode: null }
+  return state?.iso2 ?? null
 }
 
 const GeneralInfoStep = ({
@@ -93,19 +78,18 @@ const GeneralInfoStep = ({
     (user) => {
       void (async () => {
         const countryName = user.address?.country ?? null
+        const stateName = user.address?.state ?? null
         const cityName = user.address?.city ?? null
 
-        const { countryCode, state, stateCode } = await resolveLocationCodes(
-          countryName,
-          cityName
-        )
+        const countryCode = await resolveCountryCode(countryName)
+        const stateCode = await resolveStateCode(countryCode, stateName)
 
         handleDataChange({
           firstName: user.firstName ?? '',
           lastName: user.lastName ?? '',
           country: countryName,
           countryCode,
-          state,
+          state: stateName,
           stateCode,
           city: cityName,
           professionalSummary: user.professionalSummary ?? ''
