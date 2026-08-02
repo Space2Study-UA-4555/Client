@@ -6,6 +6,7 @@ import {
 export const styles = {
   container: (isClickable: boolean) => ({
     display: 'flex',
+    alignItems: 'center',
     padding: '20px 30px',
     textDecoration: 'none',
     backgroundColor: 'basic.white',
